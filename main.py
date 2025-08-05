@@ -8,7 +8,7 @@ try:
     import rule_parser
     import rule_checker
 except ImportError as e:
-    print(f"⚠️ Error importing modules: {e}")
+    print(f"Error importing modules: {e}")
     exit(1)
 
 import argparse
