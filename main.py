@@ -3,7 +3,7 @@
 #  FireFind CLI - Firewall Risk Identification Tool
 # --------------------------------------
 
-#test
+#test one
 # Temporary module imports (to be implemented by teammates)
 try:
     import rule_parser
