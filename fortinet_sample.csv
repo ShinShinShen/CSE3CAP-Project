@@ -1,0 +1,4 @@
+id,src_ip,dst_ip,src_port,dst_port,protocol,action,comment
+1,any,192.168.1.10,any,22,TCP,allow,"Allow SSH to server"
+2,10.0.0.5,any,any,any,TCP,allow,"Open outbound rule"
+3,any,any,any,any,ANY,allow,"Wide open rule"
