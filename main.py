@@ -1,48 +1,50 @@
-# This will be the beginning of our project, starting from this python file.
-# --------------------------------------
-#  FireFind CLI - Firewall Risk Identification Tool
-# --------------------------------------
-
-#test one
-# Temporary module imports (to be implemented by teammates)
-try:
-    import rule_parser
-    import rule_checker
-except ImportError as e:
-    print(f"Error importing modules: {e}")
-    exit(1)
-
 import argparse
+import os
+from config.config_loader import load_config
+import rule_parser
+import rule_checker
 
 def main():
-    parser_cli = argparse.ArgumentParser(description="FireFind CLI - Firewall Risk Identification Tool")
+    # CLI arguments
+    parser = argparse.ArgumentParser(description="Firewall Risk Identification Tool – FireFind")
+    parser.add_argument("-f", "--file", required=True, help="Path to vendor CSV export")
+    parser.add_argument("-v", "--vendor", help="Vendor name (optional, auto-detect if not provided)")
+    args = parser.parse_args()
 
-    parser_cli.add_argument("-f", "--file", required=True, help="Path to firewall rule CSV/XLSX file")
-    parser_cli.add_argument("-v", "--vendor", required=True, choices=["fortinet", "sophos", "checkpoint", "barracuda"], help="Vendor type for normalization")
-    parser_cli.add_argument("--csv", action="store_true", help="Generate CSV report")
-    parser_cli.add_argument("--pdf", action="store_true", help="Generate PDF report")
+    # Load configuration from JSON
+    config = load_config()
 
-    args = parser_cli.parse_args()
+    # Step 1: Detect vendor (if not given)
+    if args.vendor:
+        vendor = args.vendor.lower()
+    else:
+        vendor = rule_parser.detect_vendor(args.file)
 
-    print("\n📥 File Provided:", args.file)
-    print("🏷️ Vendor:", args.vendor)
+    print(f"\n📥 File Provided: {os.path.basename(args.file)}")
+    print(f"🏷️ Vendor Detected: {vendor}")
 
-    if args.csv:
-        print("📝 Will generate CSV output")
-    if args.pdf:
-        print("📄 Will generate PDF output")
+    # Step 2: Parse CSV using vendor mapping
+    try:
+        rules = rule_parser.parse_csv(args.file)
+    except NotImplementedError as e:
+        print(f"❌ {e}")
+        return
+    except Exception as e:
+        print(f"❌ Error parsing file: {e}")
+        return
 
-    # Parse the file into rules
-    rules = rule_parser.parse_csv(args.file)
+    # Step 3: Run risk checks
+    results = rule_checker.run_checker(rules)
 
-    # Check rules for risks
-    findings = rule_checker.run_checker(rules)
-
-    print("\n Findings Summary:")
-    for rule_id, issues in findings.items():
-        print(f"\nRule ID: {rule_id}")
-        for issue in issues:
-            print(f"  - Issue: {issue['issue']}, Severity: {issue['severity']}")
+    # Step 4: Display findings
+    print("\n🔍 Risk Analysis Results:")
+    for rule_id, findings in results.items():
+        if findings:
+            print(f"\nRule: {rule_id}")
+            for finding in findings:
+                print(f"  - [{finding['severity']}] {finding['issue']}")
+        else:
+            print(f"\nRule: {rule_id} - ✅ No issues found")
 
 if __name__ == "__main__":
     main()

@@ -1,120 +1,77 @@
-# rule_checker.py
-# --------------------------------------
-# Rule Checker - Identifies risky rules and scores severity
-# --------------------------------------
+from config.config_loader import load_config
+
+# Load JSON config at the top
+config = load_config()
 
 def evaluate_severity(issue_type):
     """
-    Assign a severity level based on the type of issue.
+    Gets severity from JSON config based on risk_rules.
     """
-    severity_map = {
-        "allow_all": "HIGH",
-        "no_logging": "MEDIUM",
-        "admin_port_exposed": "CRITICAL",
-        "broad_ip_range": "HIGH",
-        "missing_name": "LOW",
-        "incomplete_rule": "HIGH",
-        "redundant_rule": "LOW",
-        "untagged_rule": "INFO"
-    }
-    return severity_map.get(issue_type, "UNKNOWN")
+    risk_rules = config.data.get("risk_rules", {})
+    return risk_rules.get(issue_type, {}).get("severity", "UNKNOWN")
 
 
 def check_rule(rule):
     """
-    Run all risk checks on a single rule and return a list of findings.
+    Runs all risk checks dynamically from JSON config.
     """
     findings = []
+    risk_rules = config.data.get("risk_rules", {})
 
-    name = rule.get("name", "").lower()
-    src = rule.get("srcaddr", "").lower()
-    dst = rule.get("dstaddr", "").lower()
-    action = rule.get("action", "").lower()
-    service = rule.get("service", "").lower()
-    logging = rule.get("log", "").lower()
-    tag = rule.get("tag", "").lower()
-    src_port = rule.get("src_port", "").lower()
-    dst_port = rule.get("dst_port", "").lower()
+    for rule_name, rule_details in risk_rules.items():
+        if not rule_details.get("enabled", False):
+            continue
 
-    #  Check 1: Allow-All Rule
-    # Logic: If src, dst, and action are too open
-    if action == "accept" and src in ["all", "any"] and dst in ["all", "any"]:
-        findings.append({
-            "issue": "Allow All Rule",
-            "type": "allow_all",
-            "severity": evaluate_severity("allow_all")
-        })
+        match_criteria = rule_details.get("match", {})
+        match_ports = rule_details.get("match_ports", {})
+        required_fields = rule_details.get("required_fields", [])
+        bad_names = rule_details.get("bad_names", [])
+        empty_values = rule_details.get("empty_values", [])
+        action_scope = rule_details.get("action_scope", [])
 
-    #  Check 2: Missing Logging
-    if logging in ["no", "false", "", "none"]:
-        findings.append({
-            "issue": "No Logging Enabled",
-            "type": "no_logging",
-            "severity": evaluate_severity("no_logging")
-        })
+        # Match field values
+        match_ok = True
+        for field, values in match_criteria.items():
+            if str(rule.get(field, "")).lower() not in [v.lower() for v in values]:
+                match_ok = False
+                break
 
-    #  Check 3: Admin Ports Exposed
-    admin_ports = ["22", "3389", "23"]  # SSH, RDP, Telnet
-    if dst_port in admin_ports:
-        findings.append({
-            "issue": "Admin Port Exposed",
-            "type": "admin_port_exposed",
-            "severity": evaluate_severity("admin_port_exposed")
-        })
+        # Match port values
+        for field, ports in match_ports.items():
+            if str(rule.get(field, "")).lower() not in [p.lower() for p in ports]:
+                match_ok = False
+                break
 
-    #  Check 4: Broad Source/Destination IP Range
-    if src in ["0.0.0.0/0", "any"] or dst in ["0.0.0.0/0", "any"]:
-        findings.append({
-            "issue": "Broad IP Range Detected",
-            "type": "broad_ip_range",
-            "severity": evaluate_severity("broad_ip_range")
-        })
+        # Required fields check
+        if required_fields and any(not rule.get(field, "").strip() for field in required_fields):
+            match_ok = True
 
-    #  Check 5: Malformed or Incomplete Rules
-    required_fields = [src, dst, action, service]
-    if any(field in ["", "none", "null"] for field in required_fields):
-        findings.append({
-            "issue": "Malformed or Incomplete Rule",
-            "type": "incomplete_rule",
-            "severity": evaluate_severity("incomplete_rule")
-        })
+        # Bad names check
+        if bad_names and str(rule.get("name", "")).lower() in [b.lower() for b in bad_names]:
+            match_ok = True
 
-    #  Check 6: Missing or Generic Name
-    if name.strip() == "" or name in ["rule1", "rule2", "default", "unnamed"]:
-        findings.append({
-            "issue": "Missing or Generic Name",
-            "type": "missing_name",
-            "severity": evaluate_severity("missing_name")
-        })
+        # Empty values check
+        if empty_values and str(rule.get(rule_details.get("field", ""), "")).lower() in [v.lower() for v in empty_values]:
+            match_ok = True
 
-    #  Optional Check 7: Shadowed or Redundant Rules (simple placeholder)
-    if src == dst:
-        findings.append({
-            "issue": "Redundant Rule (source equals destination)",
-            "type": "redundant_rule",
-            "severity": evaluate_severity("redundant_rule")
-        })
+        # Action scope check
+        if action_scope and str(rule.get("action", "")).lower() not in [a.lower() for a in action_scope]:
+            match_ok = False
 
-    #  Optional Check 8: Tagging or Categorization
-    if tag == "" or tag == "none":
-        findings.append({
-            "issue": "Missing Tag or Category",
-            "type": "untagged_rule",
-            "severity": evaluate_severity("untagged_rule")
-        })
+        if match_ok:
+            findings.append({
+                "issue": rule_name,
+                "severity": evaluate_severity(rule_name)
+            })
 
     return findings
 
 
 def run_checker(rules):
     """
-    Check a list of rules and return a dict of rule findings.
-    Each rule’s findings are indexed by rule ID or name.
+    Runs check_rule() on each parsed firewall rule.
     """
     results = {}
-
-    for rule in rules:
-        rule_id = rule.get("id", rule.get("name", "unnamed_rule"))
-        results[rule_id] = check_rule(rule)
-
+    for idx, rule in enumerate(rules, start=1):
+        results[idx] = check_rule(rule)
     return results
