@@ -27,14 +27,14 @@ def parse_csv(file_path, vendor=None):
     if not vendor:
         vendor = detect_vendor(file_path)
     if not vendor:
-        print("❌ Could not detect vendor.")
+        print(" Could not detect vendor.")
         return []
 
-    print(f"🏷️ Vendor Detected: {vendor}")
+    print(f" Vendor Detected: {vendor}")
 
     mappings = config.data["vendor_mappings"].get(vendor)
     if not mappings:
-        print(f"❌ No vendor mapping found for: {vendor}")
+        print(f" No vendor mapping found for: {vendor}")
         return []
 
     columns_map = mappings.get("columns", {})
@@ -57,7 +57,7 @@ def parse_csv(file_path, vendor=None):
                     parsed_rule[standard_field] = value
                 rules.append(parsed_rule)
     except Exception as e:
-        print(f"❌ Error parsing file: {e}")
+        print(f" Error parsing file: {e}")
         return []
 
     return rules
