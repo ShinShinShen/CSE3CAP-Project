@@ -79,13 +79,19 @@ def file_browser(stdscr, path):
                 path = os.path.abspath(new_path)
                 current_selection = 0
                 scroll_offset = 0
-            else:
-                file_win.clear()
-                file_win.box()
-                msg = f"Opening file: {selected_file}"
-                file_win.addstr(win_h // 2, (win_w - len(msg)) // 2, msg)
-                file_win.refresh()
-                file_win.getch()
+            elif key == 10:  # Enter
+                selected_file = files[current_selection]
+                new_path = os.path.join(path, selected_file) if selected_file != ".." else os.path.dirname(path)
+
+                if os.path.isdir(new_path):
+                    # Enter directory
+                    path = os.path.abspath(new_path)
+                    current_selection = 0
+                    scroll_offset = 0
+                else:
+                    # Return selected file path to main program
+                    return os.path.abspath(new_path)
+
         elif key == 27:  # ESC quits
             break
 
