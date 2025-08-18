@@ -1,8 +1,11 @@
 import argparse
 import os
 from config.config_loader import load_config
-import rule_parser
-import rule_checker
+#import parser.rule_parser as rule_parser
+#import checker.rule_checker as rule_checker
+from checker import rule_checker
+from parser import rule_parser
+
 
 def main():
     # CLI arguments
