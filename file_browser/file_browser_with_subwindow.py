@@ -96,7 +96,7 @@ def main_app(stdscr):
 
     while True:
         stdscr.clear()
-        stdscr.addstr(0, 0, "Main Application Menu", curses.A_BOLD)
+        stdscr.addstr(0, 0, "File Browser Application Menu", curses.A_BOLD)
         stdscr.addstr(2, 0, "1. Browse Files")
         stdscr.addstr(3, 0, "2. Exit")
         stdscr.refresh()
