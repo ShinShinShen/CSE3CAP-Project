@@ -3,27 +3,26 @@
 
   "vendor_mappings": {
     "fortinet": {
-      "detect_headers_any": ["id", "src_ip", "dst_ip", "src_port", "dst_port", "protocol", "action", "comment"],
-      "columns": {
-        "id": ["id", "policyid"],
-        "name": ["name", "policyname"],
-        "srcaddr": ["srcaddr", "source", "src_ip"],
-        "dstaddr": ["dstaddr", "destination", "dst_ip"],
-        "service": ["service"],
-        "action": ["action"],
-        "log": ["logtraffic", "log"],
-        "src_port": ["src_port"],
-        "dst_port": ["dst_port"],
-        "protocol": ["protocol"],
-        "tag": ["tag"]
-      },
-      "defaults": {
-        "name": "",
-        "service": "any",
-        "log": "yes",
-        "tag": ""
-      }
-    }
+  "detect_headers_any": ["seq #", "id", "source", "destination", "service", "action"],
+  "columns": {
+    "id": ["seq #", "id", "policyid"],
+    "name": ["name", "policyname"],
+    "srcaddr": ["source", "source normalized interface", "srcaddr", "src_ip"],
+    "dstaddr": ["destination", "destination normalized interface", "dstaddr", "dst_ip"],
+    "service": ["service", "service name", "service value"],
+    "action": ["action"],
+    "log": ["log", "logtraffic"],
+    "comment": ["comments", "remark", "tl comment"],
+    "risk_rating": ["risk rating"]
+  },
+  "defaults": {
+    "name": "",
+    "service": "any",
+    "log": "yes",
+    "comment": "",
+    "risk_rating": ""
+  }
+}
   },
 
   "risk_rules": {
