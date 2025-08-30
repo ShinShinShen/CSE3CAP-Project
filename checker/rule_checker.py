@@ -3,17 +3,8 @@ from config.config_loader import load_config
 # Load JSON config
 config = load_config()
 
-# Map common service names to ports
-SERVICE_PORT_MAP = {
-    "ssh": "22",
-    "rdp": "3389",
-    "rdp-tcp": "3389",
-    "telnet": "23",
-    "http": "80",
-    "https": "443",
-    "smtp": "25",
-    "smtp-secure": "587"
-}
+# ✅ Load service port map from JSON instead of hardcoding
+SERVICE_PORT_MAP = config.data.get("service_port_map", {})
 
 def evaluate_severity(issue_type):
     """Gets severity from JSON config based on risk_rules."""

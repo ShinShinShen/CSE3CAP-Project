@@ -90,6 +90,18 @@
     }
   },
 
+  "service_port_map": {
+    "ssh": "22",
+    "rdp": "3389",
+    "rdp-tcp": "3389",
+    "ms-rdp": "3389",
+    "telnet": "23",
+    "http": "80",
+    "https": "443",
+    "smtp": "25",
+    "smtp-secure": "587"
+  },
+
   "reporting": {
     "severity_palette": {
       "CRITICAL": "#d32f2f",
