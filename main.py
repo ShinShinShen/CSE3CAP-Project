@@ -7,7 +7,6 @@ from checker import rule_checker
 from parser import rule_parser
 import csv
 
-#test ryan
 # -----------------------
 # Helper functions
 # -----------------------
@@ -153,3 +152,32 @@ def main():
 #  Entry point
 if __name__ == "__main__":
     main()
+
+from report.pdf_report import PDFReport
+import csv
+
+def load_findings(csv_path):
+    with open(csv_path, newline='') as f:
+        reader = csv.DictReader(f)
+        return list(reader)
+
+# Example usage after generating findings CSV
+findings = load_findings("output/fortinet_sample_findings.csv")
+filename = "fortinet_sample.csv"
+total_rules = 100  # You can count original rules if needed
+total_risks = len(findings)
+
+# Count severities
+severity_count = {}
+for f in findings:
+    level = f.get("severity", "INFO").upper()
+    severity_count[level] = severity_count.get(level, 0) + 1
+
+# Create the PDF
+pdf = PDFReport()
+pdf.add_page()
+pdf.add_summary(filename, total_rules, total_risks, severity_count)
+pdf.add_table(findings)
+print("✅ PDF generation starting...")
+pdf.output("output/firefind_report.pdf")
+print("✅ PDF has been created.")
