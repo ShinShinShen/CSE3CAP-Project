@@ -7,7 +7,6 @@ from checker import rule_checker
 from parser import rule_parser
 import csv
 
-# test ryan
 # -----------------------
 # Helper functions
 # -----------------------
