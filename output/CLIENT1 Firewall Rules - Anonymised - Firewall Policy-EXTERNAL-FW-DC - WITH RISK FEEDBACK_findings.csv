@@ -1,24 +1,7 @@
 rule_id,issue,severity
 1,admin_port_exposed,CRITICAL
-1,no_logging,MEDIUM
-1,incomplete_rule,HIGH
-1,missing_name,LOW
-1,untagged_rule,INFO
-2,no_logging,MEDIUM
-2,incomplete_rule,HIGH
-2,missing_name,LOW
-2,untagged_rule,INFO
 2,weak_protocol,HIGH
+3,allow_all_dst,HIGH
 3,admin_port_exposed,CRITICAL
-3,no_logging,MEDIUM
-3,incomplete_rule,HIGH
-3,missing_name,LOW
-3,untagged_rule,INFO
-4,no_logging,MEDIUM
-4,incomplete_rule,HIGH
-4,missing_name,LOW
-4,untagged_rule,INFO
-5,no_logging,MEDIUM
-5,incomplete_rule,HIGH
-5,missing_name,LOW
-5,untagged_rule,INFO
+4,allow_all_dst,HIGH
+5,No issues found,

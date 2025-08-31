@@ -32,7 +32,10 @@ def get_col_value(row, df, field, mappings):
     for alias in mappings.get(field, []):
         alias = alias.lower().strip()
         if alias in df.columns:
-            return str(row.get(alias, "")).strip()
+            val = str(row.get(alias, "")).strip()
+            if val and val.lower() not in ["nan", "none"]:
+                return val
+
     return ""
 
 

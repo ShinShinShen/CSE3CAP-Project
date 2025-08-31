@@ -1,9 +1,3 @@
 rule_id,issue,severity
-1,no_logging,MEDIUM
-1,incomplete_rule,HIGH
-1,missing_name,LOW
-1,untagged_rule,INFO
-2,no_logging,MEDIUM
-2,incomplete_rule,HIGH
-2,missing_name,LOW
-2,untagged_rule,INFO
+1,allow_all_service,HIGH
+2,allow_all_service,HIGH

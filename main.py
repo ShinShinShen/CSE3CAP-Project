@@ -16,7 +16,7 @@ def start_menu():
     print("    Welcome to FireFind - Firewall CLI")
     print("==========================================\n")
     print("Please select an option:")
-    print("1. Open File Browser to select firewall file (CSV/XLSX)")  # <-- updated wording
+    print("1. Open File Browser to select firewall file (CSV/XLSX)")
     print("2. Exit\n")
 
     while True:
@@ -59,7 +59,7 @@ def export_findings_to_csv(results, output_path):
 
 def main():
     parser_args = argparse.ArgumentParser(description="Firewall Risk Identification Tool - FireFind")
-    parser_args.add_argument("-f", "--file", help="Path to vendor file (CSV/XLSX)")  # <-- updated help
+    parser_args.add_argument("-f", "--file", help="Path to vendor file (CSV/XLSX)")
     parser_args.add_argument("-v", "--vendor", help="Vendor name (optional, auto-detect)")
     args = parser_args.parse_args()
 
@@ -71,11 +71,10 @@ def main():
     if args.file:
         file_path = args.file
         vendor = args.vendor.lower() if args.vendor else rule_parser.detect_vendor(file_path)
-        print(f"\n📥 File Provided: {os.path.basename(file_path)}")
-        print(f"🏷️ Vendor Detected: {vendor}")
+        print(f"\n File Provided: {os.path.basename(file_path)}")
+        print(f" Vendor Detected: {vendor}")
 
         try:
-            # <-- Changed from parse_csv() to parse_file() to handle CSV + XLSX
             rules = rule_parser.parse_file(file_path, vendor=vendor)
         except Exception as e:
             print(f"Error parsing file: {e}")
@@ -88,7 +87,7 @@ def main():
         results = rule_checker.run_checker(rules)
 
         # Display results in CLI
-        print("\n⚠️ Risk Analysis Results:")
+        print("\n Risk Analysis Results:")
         for rule_id, findings in results.items():
             if findings:
                 print(f"\nRule: {rule_id}")
@@ -103,7 +102,7 @@ def main():
         return
 
     # -------------------------
-    # No file: use menu + file browser
+    # No file: use interactive CLI + file browser
     # -------------------------
     while True:
         user_choice = start_menu()
@@ -111,7 +110,12 @@ def main():
             print("Goodbye!")
             return
         elif user_choice == "browse":
-            file_path = curses.wrapper(file_browser, os.getcwd())
+            try:
+                file_path = curses.wrapper(file_browser, os.getcwd())
+            except Exception as e:
+                print(f"File browser error: {e}")
+                continue
+
             if file_path is None:
                 continue
 
@@ -120,7 +124,7 @@ def main():
         print(f" Vendor Detected: {vendor}")
 
         try:
-            rules = rule_parser.parse_file(file_path, vendor=vendor)  # <-- updated call
+            rules = rule_parser.parse_file(file_path, vendor=vendor)
         except Exception as e:
             print(f"Error parsing file: {e}")
             continue
@@ -145,5 +149,6 @@ def main():
 
         args.vendor = None
 
+#  Entry point
 if __name__ == "__main__":
     main()

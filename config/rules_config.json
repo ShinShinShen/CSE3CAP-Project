@@ -6,7 +6,7 @@
       "detect_headers_any": ["seq #", "id", "source", "destination", "service", "action"],
       "columns": {
         "id": ["seq #", "id", "policyid"],
-        "name": ["name", "policyname"],
+        "name": ["name", "policyname", "policy name"],
         "srcaddr": ["source", "source normalized interface", "srcaddr", "src_ip"],
         "dstaddr": ["destination", "destination normalized interface", "dstaddr", "dst_ip"],
         "service": ["service", "service name", "service value"],
@@ -26,24 +26,42 @@
   },
 
   "risk_rules": {
-    "allow_all": {
+    "allow_all_src": {
       "enabled": true,
-      "match": { 
-        "srcaddr": ["any", "all", "0.0.0.0/0"], 
-        "dstaddr": ["any", "all", "0.0.0.0/0"], 
-        "action": ["accept", "allow"] 
+      "match": {
+        "srcaddr": ["any", "all", "0.0.0.0/0"],
+        "action": ["accept", "allow"]
+      },
+      "severity": "HIGH"
+    },
+    "allow_all_dst": {
+      "enabled": true,
+      "match": {
+        "dstaddr": ["any", "all", "0.0.0.0/0"],
+        "action": ["accept", "allow"]
+      },
+      "severity": "HIGH"
+    },
+    "allow_all_service": {
+      "enabled": true,
+      "match": {
+        "service": ["all", "ip/0", "any"],
+        "action": ["accept", "allow"]
       },
       "severity": "HIGH"
     },
     "admin_port_exposed": {
       "enabled": true,
       "match_ports": { "dst_port": ["22", "3389", "23"] },
-      "action_scope": ["accept", "allow"],
+      "action": ["accept", "allow"],
       "severity": "CRITICAL"
     },
     "no_logging": {
       "enabled": true,
-      "match": { "log": ["no", "false", "", "none"] },
+      "match": { 
+        "log": ["disable"],
+        "action": ["accept", "allow"] 
+      },
       "severity": "MEDIUM"
     },
     "broad_ip_range": {
@@ -52,13 +70,13 @@
       "severity": "HIGH"
     },
     "incomplete_rule": {
-      "enabled": true,
+      "enabled": false,
       "required_fields": ["srcaddr", "dstaddr", "action", "service"],
       "severity": "HIGH"
     },
     "missing_name": {
-      "enabled": true,
-      "bad_names": ["", "rule1", "rule2", "default", "unnamed"],
+      "enabled": false,
+      "bad_names": [""],
       "severity": "LOW"
     },
     "redundant_rule": {
@@ -67,7 +85,7 @@
       "severity": "LOW"
     },
     "untagged_rule": {
-      "enabled": true,
+      "enabled": false,
       "field": "name",
       "empty_values": ["", "none"],
       "severity": "INFO"
