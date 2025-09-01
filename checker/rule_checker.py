@@ -33,41 +33,55 @@ def check_rule(rule):
         action_scope = rule_details.get("action_scope", [])
 
         match_ok = True
+        matched_fields = []  # 🆕 track which fields actually matched
 
         # ✅ Match field values (substring check)
         for field, values in match_criteria.items():
             rule_value = str(rule.get(field, "")).lower()
-            if not any(v.lower() in rule_value for v in values):
+            if any(v.lower() in rule_value for v in values):
+                matched_fields.append((field, rule.get(field, "")))
+            else:
                 match_ok = False
                 break
 
         # ✅ Match port values (using normalized service name → port)
         for field, ports in match_ports.items():
             value = normalize_service(rule.get("service", ""))
-            if value not in [p.lower() for p in ports]:
+            if value in [p.lower() for p in ports]:
+                matched_fields.append(("service", rule.get("service", "")))
+            else:
                 match_ok = False
                 break
 
-        # ✅ Required fields check (only flag if missing)
+        # ✅ Required fields check
         if required_fields and any(not str(rule.get(field, "")).strip() for field in required_fields):
-            findings.append({
-                "issue": rule_name,
-                "severity": evaluate_severity(rule_name)
-            })
+            for f in required_fields:
+                if not str(rule.get(f, "")).strip():
+                    findings.append({
+                        "issue": rule_name,
+                        "field": f,
+                        "value": "",
+                        "severity": evaluate_severity(rule_name)
+                    })
             continue
 
         # ✅ Bad names check
         if bad_names and str(rule.get("name", "")).lower() in [b.lower() for b in bad_names]:
             findings.append({
                 "issue": rule_name,
+                "field": "name",
+                "value": rule.get("name", ""),
                 "severity": evaluate_severity(rule_name)
             })
             continue
 
         # ✅ Empty values check
         if empty_values and str(rule.get(rule_details.get("field", ""), "")).lower() in [v.lower() for v in empty_values]:
+            target_field = rule_details.get("field", "")
             findings.append({
                 "issue": rule_name,
+                "field": target_field,
+                "value": rule.get(target_field, ""),
                 "severity": evaluate_severity(rule_name)
             })
             continue
@@ -78,10 +92,23 @@ def check_rule(rule):
 
         # ✅ Append if still matched
         if match_ok:
-            findings.append({
-                "issue": rule_name,
-                "severity": evaluate_severity(rule_name)
-            })
+            if matched_fields:
+                # 🆕 record all matched fields + their values
+                for f, v in matched_fields:
+                    findings.append({
+                        "issue": rule_name,
+                        "field": f,
+                        "value": v,
+                        "severity": evaluate_severity(rule_name)
+                    })
+            else:
+                # fallback if no specific field matched
+                findings.append({
+                    "issue": rule_name,
+                    "field": "unspecified",
+                    "value": "",
+                    "severity": evaluate_severity(rule_name)
+                })
 
     return findings
 

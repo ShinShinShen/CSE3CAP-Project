@@ -1,7 +1,10 @@
-rule_id,issue,severity
-1,admin_port_exposed,CRITICAL
-2,weak_protocol,HIGH
-3,allow_all_dst,HIGH
-3,admin_port_exposed,CRITICAL
-4,allow_all_dst,HIGH
-5,No issues found,
+rule_id,issue,field,value,severity
+1,admin_port_exposed,service,SSH,CRITICAL
+2,weak_protocol,service,"HTTPS
+HTTP",HIGH
+3,allow_all_dst,dstaddr,any,HIGH
+3,allow_all_dst,action,Accept,HIGH
+3,admin_port_exposed,service,RDP,CRITICAL
+4,allow_all_dst,dstaddr,any,HIGH
+4,allow_all_dst,action,Accept,HIGH
+5,No issues found,-,-,
