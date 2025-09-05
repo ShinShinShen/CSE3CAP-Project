@@ -34,7 +34,7 @@ def get_col_value(row, df, field, mappings):
         if alias in df.columns:
             val = str(row.get(alias, "")).strip()
             if val and val.lower() not in ["nan", "none"]:
-                return val
+                return val.lower()
 
     return ""
 

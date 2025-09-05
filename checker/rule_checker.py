@@ -1,3 +1,4 @@
+import re
 from config.config_loader import load_config
 
 # Load JSON config
@@ -33,22 +34,55 @@ def check_rule(rule):
         action_scope = rule_details.get("action_scope", [])
 
         match_ok = True
-        matched_fields = []  # 🆕 track which fields actually matched
+        matched_fields = []  # track which fields actually matched
 
-        # ✅ Match field values (substring check)
+        # ✅ Match field values
         for field, values in match_criteria.items():
             rule_value = str(rule.get(field, "")).lower()
-            if any(v.lower() in rule_value for v in values):
-                matched_fields.append((field, rule.get(field, "")))
+            values_normalized = [v.lower() for v in values]
+
+            if field == "service":
+                # Split service field into tokens (space, comma, semicolon, line breaks)
+                tokens = re.split(r"[\s,;]+", rule_value)
+                tokens = [t.strip() for t in tokens if t.strip()]
+                matched = [t for t in tokens if t in values_normalized]
+
+            elif field == "log":
+                # For log field, compare full string (don’t split "no log")
+                matched = [rule_value] if rule_value in values_normalized else []
+
+            else:
+                # Default: check full string against values
+                matched = [rule_value] if rule_value in values_normalized else []
+
+            if matched:
+                for m in matched:
+                    matched_fields.append((field, m))
             else:
                 match_ok = False
                 break
 
-        # ✅ Match port values (using normalized service name → port)
+        # ✅ Match port values (service OR dst_port)
         for field, ports in match_ports.items():
-            value = normalize_service(rule.get("service", ""))
-            if value in [p.lower() for p in ports]:
-                matched_fields.append(("service", rule.get("service", "")))
+            values = []
+
+            if field == "service":
+                service_field = str(rule.get("service", ""))
+                # Split by spaces, commas, semicolons, or line breaks
+                service_parts = re.split(r"[\s,;]+", service_field)
+                values = [normalize_service(s.strip()) for s in service_parts if s.strip()]
+
+            elif field == "dst_port":
+                values = [str(rule.get("dst_port", "")).lower()]
+
+            else:
+                values = [str(rule.get(field, "")).lower()]
+
+            # Check if any part matches
+            if any(v in [p.lower() for p in ports] for v in values):
+                for v in values:
+                    if v in [p.lower() for p in ports]:
+                        matched_fields.append((field, v))
             else:
                 match_ok = False
                 break
@@ -93,7 +127,7 @@ def check_rule(rule):
         # ✅ Append if still matched
         if match_ok:
             if matched_fields:
-                # 🆕 record all matched fields + their values
+                # record all matched fields + their values
                 for f, v in matched_fields:
                     findings.append({
                         "issue": rule_name,
@@ -102,7 +136,6 @@ def check_rule(rule):
                         "severity": evaluate_severity(rule_name)
                     })
             else:
-                # fallback if no specific field matched
                 findings.append({
                     "issue": rule_name,
                     "field": "unspecified",

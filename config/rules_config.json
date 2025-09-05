@@ -28,83 +28,69 @@
   "risk_rules": {
     "allow_all_src": {
       "enabled": true,
-      "match": {
-        "srcaddr": ["any", "all", "0.0.0.0/0"],
-        "action": ["accept", "allow"]
-      },
+      "match": { "srcaddr": ["any", "all", "0.0.0.0/0"], "action": ["accept", "allow"] },
       "severity": "HIGH"
     },
     "allow_all_dst": {
       "enabled": true,
-      "match": {
-        "dstaddr": ["any", "all", "0.0.0.0/0"],
-        "action": ["accept", "allow"]
-      },
+      "match": { "dstaddr": ["any", "all", "0.0.0.0/0"], "action": ["accept", "allow"] },
       "severity": "HIGH"
     },
     "allow_all_service": {
       "enabled": true,
-      "match": {
-        "service": ["all", "ip/0", "any"],
-        "action": ["accept", "allow"]
-      },
+      "match": { "service": ["all", "ip/0", "any"], "action": ["accept", "allow"] },
       "severity": "HIGH"
     },
+
     "admin_port_exposed": {
       "enabled": true,
-      "match_ports": { "dst_port": ["22", "3389", "23"] },
+      "match_ports": { "dst_port": ["22", "23", "3389", "5900", "5985", "5986"] },
       "action": ["accept", "allow"],
       "severity": "CRITICAL"
     },
+
+    "service_admin_port_exposed": {
+      "enabled": true,
+      "match_ports": { "service": ["22", "23", "3389", "5900", "5985", "5986"] },
+      "action": ["accept", "allow"],
+      "severity": "CRITICAL"
+    },
+
+    "suspicious_service": {
+      "enabled": true,
+      "match_ports": {
+        "service": ["21", "23", "69", "445", "2049"]
+      },
+      "match": {
+        "service": ["microsoft-ds", "nbt", "unknown", "custom", "lpdw0rm", "Remote_Storm", "PIX_8490-tcp"]
+      },
+      "action": ["accept", "allow"],
+      "severity": "HIGH"
+    },
+
     "no_logging": {
       "enabled": true,
-      "match": { 
-        "log": ["disable"],
-        "action": ["accept", "allow"] 
-      },
+      "match": { "log": ["disable", "no log", "none"], "action": ["accept", "allow"] },
       "severity": "MEDIUM"
     },
+
     "broad_ip_range": {
       "enabled": true,
       "match": { "srcaddr": ["0.0.0.0/0"], "dstaddr": ["0.0.0.0/0"] },
       "severity": "HIGH"
     },
-    "incomplete_rule": {
-      "enabled": false,
-      "required_fields": ["srcaddr", "dstaddr", "action", "service"],
-      "severity": "HIGH"
-    },
-    "missing_name": {
-      "enabled": false,
-      "bad_names": [""],
-      "severity": "LOW"
-    },
-    "redundant_rule": {
-      "enabled": false,
-      "method": "simple_same_src_dst",
-      "severity": "LOW"
-    },
-    "untagged_rule": {
-      "enabled": false,
-      "field": "name",
-      "empty_values": ["", "none"],
-      "severity": "INFO"
-    },
+
     "weak_protocol": {
       "enabled": true,
       "match": { "service": ["ftp", "telnet", "http"] },
       "severity": "HIGH"
     },
+
     "any_source_high_port": {
       "enabled": true,
       "match": { "srcaddr": ["any", "0.0.0.0/0"] },
       "match_ports": { "dst_port": ["1024-65535"] },
       "severity": "MEDIUM"
-    },
-    "suspicious_service": {
-      "enabled": true,
-      "match": { "service": ["unknown", "custom"] },
-      "severity": "LOW"
     }
   },
 
@@ -113,9 +99,17 @@
     "rdp": "3389",
     "rdp-tcp": "3389",
     "ms-rdp": "3389",
+    "vnc": "5900",
+    "winrm-http": "5985",
+    "winrm-https": "5986",
     "telnet": "23",
+    "ftp": "21",
+    "tftp": "69",
+    "smb": "445",
+    "microsoft-ds": "445",
+    "nbt": "137",
+    "nfs": "2049",
     "http": "80",
-    "https": "443",
     "smtp": "25",
     "smtp-secure": "587"
   },

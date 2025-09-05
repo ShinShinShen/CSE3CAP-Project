@@ -1,55 +1,83 @@
-rule_id,issue,severity
-1,incomplete_rule,HIGH
-2,incomplete_rule,HIGH
-3,incomplete_rule,HIGH
-4,incomplete_rule,HIGH
-5,incomplete_rule,HIGH
-5,weak_protocol,HIGH
-6,incomplete_rule,HIGH
-7,incomplete_rule,HIGH
-8,incomplete_rule,HIGH
-9,incomplete_rule,HIGH
-10,incomplete_rule,HIGH
-11,incomplete_rule,HIGH
-11,weak_protocol,HIGH
-12,incomplete_rule,HIGH
-12,weak_protocol,HIGH
-13,incomplete_rule,HIGH
-14,incomplete_rule,HIGH
-15,incomplete_rule,HIGH
-16,incomplete_rule,HIGH
-16,weak_protocol,HIGH
-17,allow_all_dst,HIGH
-17,incomplete_rule,HIGH
-17,weak_protocol,HIGH
-18,incomplete_rule,HIGH
-19,incomplete_rule,HIGH
-19,weak_protocol,HIGH
-20,incomplete_rule,HIGH
-20,weak_protocol,HIGH
-21,incomplete_rule,HIGH
-21,weak_protocol,HIGH
-22,incomplete_rule,HIGH
-23,incomplete_rule,HIGH
-24,incomplete_rule,HIGH
-25,incomplete_rule,HIGH
-26,incomplete_rule,HIGH
-27,allow_all_dst,HIGH
-27,incomplete_rule,HIGH
-27,weak_protocol,HIGH
-28,incomplete_rule,HIGH
-29,incomplete_rule,HIGH
-30,incomplete_rule,HIGH
-31,incomplete_rule,HIGH
-32,incomplete_rule,HIGH
-33,incomplete_rule,HIGH
-34,incomplete_rule,HIGH
-35,incomplete_rule,HIGH
-35,weak_protocol,HIGH
-36,incomplete_rule,HIGH
-36,weak_protocol,HIGH
-37,incomplete_rule,HIGH
-38,incomplete_rule,HIGH
-38,weak_protocol,HIGH
-39,incomplete_rule,HIGH
-40,incomplete_rule,HIGH
+rule_id,issue,field,value,severity
+1,No issues found,-,-,
+2,No issues found,-,-,
+3,No issues found,-,-,
+4,No issues found,-,-,
+5,weak_protocol,service,"http
+https",HIGH
+6,No issues found,-,-,
+7,No issues found,-,-,
+8,No issues found,-,-,
+9,No issues found,-,-,
+10,No issues found,-,-,
+11,weak_protocol,service,"UDP_443
+http
+https",HIGH
+12,weak_protocol,service,https,HIGH
+13,No issues found,-,-,
+14,No issues found,-,-,
+15,No issues found,-,-,
+16,weak_protocol,service,"Citrix_I
+Citrix_I_2598
+TCP_49752
+UDP_1494
+http
+http_8080
+https",HIGH
+17,allow_all_dst,dstaddr,any,HIGH
+17,allow_all_dst,action,Accept,HIGH
+17,weak_protocol,service,https,HIGH
+18,No issues found,-,-,
+19,weak_protocol,service,https,HIGH
+20,weak_protocol,service,https,HIGH
+21,weak_protocol,service,https,HIGH
+22,No issues found,-,-,
+23,No issues found,-,-,
+24,No issues found,-,-,
+25,No issues found,-,-,
+26,No issues found,-,-,
+27,allow_all_dst,dstaddr,any,HIGH
+27,allow_all_dst,action,Accept,HIGH
+27,weak_protocol,service,"ftp
+http
+https
+ssh",HIGH
+28,No issues found,-,-,
+29,No issues found,-,-,
+30,No issues found,-,-,
+31,No issues found,-,-,
+32,No issues found,-,-,
+33,No issues found,-,-,
+34,No issues found,-,-,
+35,weak_protocol,service,"Citrix_I
+Citrix_I_2598
+UDP_1494
+UDP_2598
+http
+https",HIGH
+36,weak_protocol,service,"Citrix_I
+Citrix_I_2598
+MS_Terminal_Services
+TCP-49152_65535
+TCP_135
+TCP_138
+TCP_5985
+TCP_8008
+UDP-49152_65535
+UDP_1494
+UDP_2598
+UDP_49152-50795
+http
+https
+icmp-comms
+natagram",HIGH
+37,No issues found,-,-,
+38,weak_protocol,service,"Citrix_I
+Citrix_I_2598
+TCP_49752
+UDP_1494
+http
+http_8080
+https",HIGH
+39,No issues found,-,-,
+40,No issues found,-,-,
