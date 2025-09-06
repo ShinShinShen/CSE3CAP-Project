@@ -1,0 +1,9 @@
+rule_id,issue,field,value,severity
+1,allow_all_src,srcaddr,any,HIGH
+1,allow_all_src,action,allow,HIGH
+2,allow_all_dst,dstaddr,any,HIGH
+2,allow_all_dst,action,allow,HIGH
+3,allow_all_src,srcaddr,any,HIGH
+3,allow_all_src,action,allow,HIGH
+3,allow_all_dst,dstaddr,any,HIGH
+3,allow_all_dst,action,allow,HIGH

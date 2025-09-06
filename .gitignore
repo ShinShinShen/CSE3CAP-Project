@@ -1,6 +1,5 @@
 /__pycache__
 .DS_Store
-/config/__pycache__/
-/checker/__pycache__
-/parser/__pycache__
-output/fortinet_sample_findings.csv
+/.venv
+__pycache__/
+*.pyc

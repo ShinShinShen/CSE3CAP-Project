@@ -5,7 +5,7 @@ import csv
 from config.config_loader import load_config
 from file_browser.file_browser_with_subwindow import file_browser
 from checker import rule_checker
-from parser import rule_parser
+from parser_utils import rule_parser
 from report.pdf_report import PDFReport
 
 # -----------------------
