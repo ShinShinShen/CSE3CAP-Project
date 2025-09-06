@@ -8,9 +8,6 @@ from checker import rule_checker
 from parser_utils import rule_parser
 from report.pdf_report import PDFReport
 
-# -----------------------
-# Helper functions
-# -----------------------
 
 def start_menu():
     print("\n==========================================")
@@ -57,7 +54,7 @@ def export_findings_to_csv(results, output_path):
                         "severity": finding["severity"]
                     })
 
-    print(f"\n✅ Technical findings exported to {output_path}")
+    print(f"\n Technical findings exported to {output_path}")
 
 def export_findings_to_pdf(results, file_path, output_pdf):
     """Generate PDF report from findings."""
@@ -95,7 +92,7 @@ def export_findings_to_pdf(results, file_path, output_pdf):
     pdf.add_table(findings)
     pdf.output(output_pdf)
 
-    print(f"✅ PDF report exported to {output_pdf}")
+    print(f" PDF report exported to {output_pdf}")
 
 # -----------------------
 # Main program
