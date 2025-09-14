@@ -26,12 +26,12 @@
   },
 
   "risk_rules": {
-    "allow_all_src": {
+    "allow_all_source_port": {
       "enabled": true,
       "match": { "srcaddr": ["any", "all", "0.0.0.0/0"], "action": ["accept", "allow"] },
       "severity": "HIGH"
     },
-    "allow_all_dst": {
+    "allow_all_destination_port": {
       "enabled": true,
       "match": { "dstaddr": ["any", "all", "0.0.0.0/0"], "action": ["accept", "allow"] },
       "severity": "HIGH"
@@ -45,6 +45,15 @@
     "admin_port_exposed": {
       "enabled": true,
       "match_ports": { "dst_port": ["22", "23", "3389", "5900", "5985", "5986"] },
+      "action": ["accept", "allow"],
+      "severity": "CRITICAL"
+    },
+    
+    "smb_netbios_exposed": {
+      "enabled": true,
+      "match": {
+        "service": ["nbt_", "tcp_135", "microsoft-ds", "tcp_445"]
+      },
       "action": ["accept", "allow"],
       "severity": "CRITICAL"
     },

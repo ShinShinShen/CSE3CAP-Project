@@ -1,10 +1,9 @@
 rule_id,issue,field,value,severity
-1,admin_port_exposed,service,SSH,CRITICAL
-2,weak_protocol,service,"HTTPS
-HTTP",HIGH
-3,allow_all_dst,dstaddr,any,HIGH
-3,allow_all_dst,action,Accept,HIGH
-3,admin_port_exposed,service,RDP,CRITICAL
-4,allow_all_dst,dstaddr,any,HIGH
-4,allow_all_dst,action,Accept,HIGH
+1,service_admin_port_exposed,service,22,CRITICAL
+2,weak_protocol,service,http,HIGH
+3,allow_all_destination_port,dstaddr,any,HIGH
+3,allow_all_destination_port,action,accept,HIGH
+3,service_admin_port_exposed,service,3389,CRITICAL
+4,allow_all_destination_port,dstaddr,any,HIGH
+4,allow_all_destination_port,action,accept,HIGH
 5,No issues found,-,-,

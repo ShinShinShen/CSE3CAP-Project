@@ -1,5 +1,6 @@
 import csv
 import pandas as pd
+import re
 from config.config_loader import load_config
 
 config = load_config()
@@ -13,7 +14,7 @@ def detect_vendor(file_path):
             headers = [h.strip().lower() for h in next(csv.reader(csvfile))]
 
     elif file_path.endswith(".xlsx"):
-        df = pd.read_excel(file_path, sheet_name=0, dtype=str, header=None)
+        df = pd.read_excel(file_path, sheet_name=0, dtype=str, header=None, engine="openpyxl")
         for _, row in df.iterrows():
             row_lower = [str(cell).strip().lower() for cell in row.values]
             if "seq #" in row_lower and "action" in row_lower:
@@ -35,7 +36,16 @@ def get_col_value(row, df, field, mappings):
             val = str(row.get(alias, "")).strip()
             if val and val.lower() not in ["nan", "none"]:
                 return val.lower()
+    return ""
 
+
+def extract_port(service_str):
+    """Extract first numeric port from a service string (e.g., 'TCP_3389' -> '3389')."""
+    if not service_str:
+        return ""
+    match = re.search(r"(\d+)", service_str)
+    if match:
+        return match.group(1)
     return ""
 
 
@@ -63,7 +73,6 @@ def parse_file(file_path, vendor=None):
             df = df.fillna("")
             df.columns = [str(c).strip().lower() for c in df.columns]
 
-            # Only keep numeric IDs
             id_field = None
             for alias in mappings.get("id", []):
                 if alias.lower() in df.columns:
@@ -76,6 +85,11 @@ def parse_file(file_path, vendor=None):
 
             grouped = {}
             for _, row in df.iterrows():
+                # Skip repeated headers inside CSV
+                row_lower = [str(cell).strip().lower() for cell in row.values]
+                if "seq #" in row_lower and "action" in row_lower:
+                    continue
+
                 rid = get_col_value(row, df, "id", mappings)
                 if not rid or not rid.isdigit():
                     continue
@@ -103,12 +117,14 @@ def parse_file(file_path, vendor=None):
                 if svc: grouped[rid]["service"].add(svc)
 
             for rid, rule in grouped.items():
+                service_str = ", ".join(sorted(rule["service"]))
                 rules.append({
                     "id": rule["id"],
                     "name": rule["name"],
                     "srcaddr": ", ".join(sorted(rule["srcaddr"])),
                     "dstaddr": ", ".join(sorted(rule["dstaddr"])),
-                    "service": ", ".join(sorted(rule["service"])),
+                    "service": service_str,
+                    "dst_port": extract_port(service_str),
                     "action": rule["action"],
                     "log": rule["log"],
                     "comment": rule["comment"],
@@ -117,28 +133,28 @@ def parse_file(file_path, vendor=None):
 
         # ---------------- XLSX ----------------
         elif file_path.endswith(".xlsx"):
-            df_all = pd.read_excel(file_path, sheet_name=0, dtype=str, header=None)
-            header_row_index = None
+            df_all = pd.read_excel(file_path, sheet_name=0, dtype=str, header=None, engine="openpyxl")
 
-            # Find header row
+            # Find the first header row
+            first_header_idx = None
             for i, row in df_all.iterrows():
                 row_lower = [str(cell).strip().lower() for cell in row.values]
                 if "seq #" in row_lower and "action" in row_lower:
-                    header_row_index = i
+                    first_header_idx = i
                     break
 
-            if header_row_index is None:
+            if first_header_idx is None:
                 return []
 
-            # Reload from header row down
-            df = pd.read_excel(file_path, sheet_name=0, dtype=str, header=header_row_index)
+            # Reload dataframe from the first header row
+            df = pd.read_excel(file_path, sheet_name=0, dtype=str, header=first_header_idx, engine="openpyxl")
             df = df.fillna("")
             df.columns = [str(c).strip().lower() for c in df.columns]
-
-            # Drop junk "Unnamed" columns
             df = df.loc[:, ~df.columns.str.contains("^unnamed")]
 
-            # Only keep numeric IDs
+            # 🚨 Skip repeated header rows mid-file
+            df = df[~df['seq #'].str.contains("seq #", case=False, na=False)]
+
             id_field = None
             for alias in mappings.get("id", []):
                 if alias.lower() in df.columns:
@@ -147,7 +163,7 @@ def parse_file(file_path, vendor=None):
             if not id_field:
                 return []
 
-            df = df[df[id_field].astype(str).str.strip().str.isdigit()]
+            df = df[df[id_field].astype(str).str.strip() != ""]
 
             grouped = {}
             for _, row in df.iterrows():
@@ -178,12 +194,14 @@ def parse_file(file_path, vendor=None):
                 if svc: grouped[rid]["service"].add(svc)
 
             for rid, rule in grouped.items():
+                service_str = ", ".join(sorted(rule["service"]))
                 rules.append({
                     "id": rule["id"],
                     "name": rule["name"],
                     "srcaddr": ", ".join(sorted(rule["srcaddr"])),
                     "dstaddr": ", ".join(sorted(rule["dstaddr"])),
-                    "service": ", ".join(sorted(rule["service"])),
+                    "service": service_str,
+                    "dst_port": extract_port(service_str),
                     "action": rule["action"],
                     "log": rule["log"],
                     "comment": rule["comment"],
