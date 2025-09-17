@@ -1,0 +1,56 @@
+rule_id,issue,field,value,severity
+1,No issues found,-,-,
+2,No issues found,-,-,
+3,No issues found,-,-,
+4,No issues found,-,-,
+5,allow_all_source_port,srcaddr,any,HIGH
+5,allow_all_source_port,action,accept,HIGH
+5,allow_all_service,service,all,HIGH
+5,allow_all_service,action,accept,HIGH
+6,allow_all_service,service,all,HIGH
+6,allow_all_service,action,accept,HIGH
+7,allow_all_service,service,all,HIGH
+7,allow_all_service,action,accept,HIGH
+8,allow_all_service,service,all,HIGH
+8,allow_all_service,action,accept,HIGH
+9,allow_all_service,service,all,HIGH
+9,allow_all_service,action,accept,HIGH
+10,allow_all_service,service,all,HIGH
+10,allow_all_service,action,accept,HIGH
+11,No issues found,-,-,
+12,allow_all_service,service,all,HIGH
+12,allow_all_service,action,accept,HIGH
+13,allow_all_service,service,all,HIGH
+13,allow_all_service,action,accept,HIGH
+14,allow_all_service,service,all,HIGH
+14,allow_all_service,action,accept,HIGH
+15,allow_all_service,service,all,HIGH
+15,allow_all_service,action,accept,HIGH
+16,allow_all_service,service,all,HIGH
+16,allow_all_service,action,accept,HIGH
+17,No issues found,-,-,
+18,allow_all_service,service,all,HIGH
+18,allow_all_service,action,accept,HIGH
+19,allow_all_service,service,all,HIGH
+19,allow_all_service,action,accept,HIGH
+20,allow_all_service,service,all,HIGH
+20,allow_all_service,action,accept,HIGH
+21,allow_all_service,service,all,HIGH
+21,allow_all_service,action,accept,HIGH
+22,allow_all_service,service,all,HIGH
+22,allow_all_service,action,accept,HIGH
+23,allow_all_service,service,all,HIGH
+23,allow_all_service,action,accept,HIGH
+24,allow_all_service,service,all,HIGH
+24,allow_all_service,action,accept,HIGH
+25,allow_all_service,service,all,HIGH
+25,allow_all_service,action,accept,HIGH
+26,allow_all_service,service,all,HIGH
+26,allow_all_service,action,accept,HIGH
+27,allow_all_service,service,all,HIGH
+27,allow_all_service,action,accept,HIGH
+28,allow_all_service,service,all,HIGH
+28,allow_all_service,action,accept,HIGH
+29,allow_all_service,service,all,HIGH
+29,allow_all_service,action,accept,HIGH
+30,No issues found,-,-,

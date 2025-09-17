@@ -11,7 +11,16 @@ def detect_vendor(file_path):
 
     if file_path.endswith(".csv"):
         with open(file_path, newline='', encoding="utf-8") as csvfile:
-            headers = [h.strip().lower() for h in next(csv.reader(csvfile))]
+            reader = list(csv.reader(csvfile))
+
+        # Flatten first rows for detection
+        flat = [str(cell).strip().lower() for row in reader[:15] for cell in row]
+
+        # Detect Client3 CSV by marker row
+        if any("ipv4 local in policy" in cell for cell in flat):
+            return "client3_csv"
+
+        headers = [h.strip().lower() for h in reader[0]]
 
     elif file_path.endswith(".xlsx"):
         df = pd.read_excel(file_path, sheet_name=0, dtype=str, header=None, engine="openpyxl")
@@ -29,13 +38,13 @@ def detect_vendor(file_path):
 
 
 def get_col_value(row, df, field, mappings):
-    """Fetch the value for a logical field (id, name, srcaddr, log, etc.) using vendor mappings."""
+    """Fetch the value for a logical field (id, name, srcaddr, etc.) using vendor mappings."""
     for alias in mappings.get(field, []):
         alias = alias.lower().strip()
         if alias in df.columns:
             val = str(row.get(alias, "")).strip()
             if val and val.lower() not in ["nan", "none"]:
-                return val.lower()
+                return val
     return ""
 
 
@@ -67,8 +76,59 @@ def parse_file(file_path, vendor=None):
     rules = []
 
     try:
-        # ---------------- CSV ----------------
-        if file_path.endswith(".csv"):
+        # ---------------- Client3 CSV ----------------
+        if file_path.endswith(".csv") and vendor == "client3_csv":
+            with open(file_path, newline='', encoding="utf-8") as csvfile:
+                reader = list(csv.reader(csvfile))
+
+            start_index = None
+            for i, row in enumerate(reader):
+                row_lower = [str(c).strip().lower() for c in row]
+                if any("ipv4 local in policy" in cell for cell in row_lower):
+                    start_index = i + 1
+                    break
+
+            if start_index is None:
+                print("No IPv4 Local In Policy section found.")
+                return []
+
+            headers = [h.strip().lower() for h in reader[start_index]]
+            df = pd.DataFrame(reader[start_index+1:], columns=headers)
+            df = df.fillna("")
+
+            id_field = "policyid"
+            if id_field not in df.columns:
+                print(" No policyid column in IPv4 Local In Policy section")
+                return []
+
+            df = df[df[id_field].astype(str).str.strip().str.isdigit()]
+
+            for _, row in df.iterrows():
+                rid = row.get("policyid", "").strip()
+                if not rid.isdigit():
+                    continue
+
+                service_val = row.get("service", "").strip()
+
+                rules.append({
+                    "id": rid,
+                    "name": row.get("comments", ""),
+                    "srcaddr": row.get("srcaddr", ""),
+                    "dstaddr": row.get("dstaddr", ""),
+                    "service": service_val,
+                    "dst_port": extract_port(service_val),
+                    "action": row.get("action", ""),
+                    "log": row.get("log", "log all sessions"),
+                    "comment": row.get("comments", ""),
+                    "status": row.get("status", "enable"),
+                    "srcaddr_negate": row.get("srcaddr-negate", ""),
+                    "dstaddr_negate": row.get("dstaddr-negate", ""),
+                    "service_negate": row.get("service-negate", ""),
+                    "vendor": vendor
+                })
+
+        # ---------------- Other CSV (Fortinet, etc.) ----------------
+        elif file_path.endswith(".csv"):
             df = pd.read_csv(file_path, dtype=str)
             df = df.fillna("")
             df.columns = [str(c).strip().lower() for c in df.columns]
@@ -85,11 +145,6 @@ def parse_file(file_path, vendor=None):
 
             grouped = {}
             for _, row in df.iterrows():
-                # Skip repeated headers inside CSV
-                row_lower = [str(cell).strip().lower() for cell in row.values]
-                if "seq #" in row_lower and "action" in row_lower:
-                    continue
-
                 rid = get_col_value(row, df, "id", mappings)
                 if not rid or not rid.isdigit():
                     continue
@@ -105,6 +160,11 @@ def parse_file(file_path, vendor=None):
                         "log": get_col_value(row, df, "log", mappings),
                         "comment": get_col_value(row, df, "comment", mappings),
                         "risk_rating": get_col_value(row, df, "risk_rating", mappings),
+                        "status": get_col_value(row, df, "status", mappings),
+                        "srcaddr_negate": get_col_value(row, df, "srcaddr_negate", mappings),
+                        "dstaddr_negate": get_col_value(row, df, "dstaddr_negate", mappings),
+                        "service_negate": get_col_value(row, df, "service_negate", mappings),
+                        "vendor": vendor
                     }
 
                 src = get_col_value(row, df, "srcaddr", mappings)
@@ -129,13 +189,17 @@ def parse_file(file_path, vendor=None):
                     "log": rule["log"],
                     "comment": rule["comment"],
                     "risk_rating": rule["risk_rating"],
+                    "status": rule["status"],
+                    "srcaddr_negate": rule["srcaddr_negate"],
+                    "dstaddr_negate": rule["dstaddr_negate"],
+                    "service_negate": rule["service_negate"],
+                    "vendor": rule["vendor"]
                 })
 
         # ---------------- XLSX ----------------
         elif file_path.endswith(".xlsx"):
             df_all = pd.read_excel(file_path, sheet_name=0, dtype=str, header=None, engine="openpyxl")
 
-            # Find the first header row
             first_header_idx = None
             for i, row in df_all.iterrows():
                 row_lower = [str(cell).strip().lower() for cell in row.values]
@@ -146,13 +210,10 @@ def parse_file(file_path, vendor=None):
             if first_header_idx is None:
                 return []
 
-            # Reload dataframe from the first header row
             df = pd.read_excel(file_path, sheet_name=0, dtype=str, header=first_header_idx, engine="openpyxl")
             df = df.fillna("")
             df.columns = [str(c).strip().lower() for c in df.columns]
             df = df.loc[:, ~df.columns.str.contains("^unnamed")]
-
-            # 🚨 Skip repeated header rows mid-file
             df = df[~df['seq #'].str.contains("seq #", case=False, na=False)]
 
             id_field = None
@@ -182,6 +243,11 @@ def parse_file(file_path, vendor=None):
                         "log": get_col_value(row, df, "log", mappings),
                         "comment": get_col_value(row, df, "comment", mappings),
                         "risk_rating": get_col_value(row, df, "risk_rating", mappings),
+                        "status": get_col_value(row, df, "status", mappings),
+                        "srcaddr_negate": get_col_value(row, df, "srcaddr_negate", mappings),
+                        "dstaddr_negate": get_col_value(row, df, "dstaddr_negate", mappings),
+                        "service_negate": get_col_value(row, df, "service_negate", mappings),
+                        "vendor": vendor
                     }
 
                 src = get_col_value(row, df, "srcaddr", mappings)
@@ -206,6 +272,11 @@ def parse_file(file_path, vendor=None):
                     "log": rule["log"],
                     "comment": rule["comment"],
                     "risk_rating": rule["risk_rating"],
+                    "status": rule["status"],
+                    "srcaddr_negate": rule["srcaddr_negate"],
+                    "dstaddr_negate": rule["dstaddr_negate"],
+                    "service_negate": rule["service_negate"],
+                    "vendor": rule["vendor"]
                 })
 
     except Exception as e:

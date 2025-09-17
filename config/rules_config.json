@@ -1,26 +1,137 @@
 {
-  "meta": { "version": "0.2", "default_vendor": "auto" },
-
   "vendor_mappings": {
     "fortinet": {
-      "detect_headers_any": ["seq #", "id", "source", "destination", "service", "action"],
+      "detect_headers_any": ["seq #", "source", "destination", "service", "action"],
       "columns": {
-        "id": ["seq #", "id", "policyid"],
-        "name": ["name", "policyname", "policy name"],
-        "srcaddr": ["source", "source normalized interface", "srcaddr", "src_ip"],
-        "dstaddr": ["destination", "destination normalized interface", "dstaddr", "dst_ip"],
-        "service": ["service", "service name", "service value"],
+        "id": ["seq #"],
+        "name": ["name"],
+        "srcaddr": ["source", "srcaddr"],
+        "dstaddr": ["destination", "dstaddr"],
+        "service": ["service"],
         "action": ["action"],
-        "log": ["log", "logtraffic", "log all sessions"],
-        "comment": ["comments", "remark", "tl comment"],
-        "risk_rating": ["risk rating"]
+        "log": ["log"],
+        "comment": ["comments"],
+        "risk_rating": ["risk"]
       },
       "defaults": {
-        "name": "",
-        "service": "any",
-        "log": "yes",
+        "log": "log all sessions",
+        "comment": ""
+      }
+    },
+
+    "sdwan": {
+      "detect_headers_any": ["rule id", "src-ip", "dst-ip", "protocol", "action"],
+      "columns": {
+        "id": ["rule id"],
+        "name": ["name"],
+        "srcaddr": ["src-ip"],
+        "dstaddr": ["dst-ip"],
+        "service": ["protocol"],
+        "action": ["action"],
+        "log": ["logging"],
+        "comment": ["description"]
+      },
+      "defaults": {
+        "log": "enabled",
+        "comment": ""
+      }
+    },
+
+    "client3_csv": {
+      "detect_headers_any": ["policyid", "srcaddr", "dstaddr", "service", "action"],
+      "columns": {
+        "id": ["policyid"],
+        "name": ["comments"],
+        "srcaddr": ["srcaddr"],
+        "dstaddr": ["dstaddr"],
+        "service": ["service"],
+        "action": ["action"],
+        "log": ["log"],
+        "comment": ["comments"],
+        "status": ["status"],
+        "srcaddr_negate": ["srcaddr-negate"],
+        "dstaddr_negate": ["dstaddr-negate"],
+        "service_negate": ["service-negate"]
+      },
+      "defaults": {
+        "log": "log all sessions",
         "comment": "",
-        "risk_rating": ""
+        "status": "enable"
+      },
+      "risk_rules": {
+        "allow_all_source_port_client3": {
+          "enabled": true,
+          "match": {
+            "srcaddr": ["any", "all", "0.0.0.0/0"],
+            "srcaddr_negate": ["disable"],
+            "status": ["enable"],
+            "action": ["accept", "allow"]
+          },
+          "severity": "HIGH"
+        },
+        "allow_all_destination_port_client3": {
+          "enabled": true,
+          "match": {
+            "dstaddr": ["any", "all", "0.0.0.0/0"],
+            "dstaddr_negate": ["disable"],
+            "status": ["enable"],
+            "action": ["accept", "allow"]
+          },
+          "severity": "HIGH"
+        },
+        "allow_all_service_client3": {
+          "enabled": true,
+          "match": {
+            "service": ["all", "ip/0", "any"],
+            "service_negate": ["disable"],
+            "status": ["enable"],
+            "action": ["accept", "allow"]
+          },
+          "severity": "HIGH"
+        },
+        "service_admin_port_exposed_client3": {
+          "enabled": true,
+          "match_ports": {
+            "service": ["22", "23", "3389", "5900", "5985", "5986"]
+          },
+          "match": {
+            "service_negate": ["disable"],
+            "status": ["enable"],
+            "action": ["accept", "allow"]
+          },
+          "severity": "CRITICAL"
+        },
+        "smb_netbios_exposed_client3": {
+          "enabled": true,
+          "match_ports": {
+            "service": ["137", "138", "139", "445"]
+          },
+          "match": {
+            "service_negate": ["disable"],
+            "status": ["enable"],
+            "action": ["accept", "allow"]
+          },
+          "severity": "CRITICAL"
+        },
+        "suspicious_service_client3": {
+          "enabled": true,
+          "match": {
+            "service": ["telnet", "ftp", "tftp", "irc"],
+            "service_negate": ["disable"],
+            "status": ["enable"],
+            "action": ["accept", "allow"]
+          },
+          "severity": "HIGH"
+        },
+        "no_logging_client3": {
+          "enabled": true,
+          "match": {
+            "log": ["disable", "no log", "none", "log violation traffic"],
+            "status": ["enable"],
+            "action": ["accept", "allow"]
+          },
+          "severity": "MEDIUM"
+        }
       }
     }
   },
@@ -28,108 +139,94 @@
   "risk_rules": {
     "allow_all_source_port": {
       "enabled": true,
-      "match": { "srcaddr": ["any", "all", "0.0.0.0/0"], "action": ["accept", "allow"] },
+      "match": {
+        "srcaddr": ["any", "all", "0.0.0.0/0"],
+        "action": ["accept", "allow"]
+      },
       "severity": "HIGH"
     },
     "allow_all_destination_port": {
       "enabled": true,
-      "match": { "dstaddr": ["any", "all", "0.0.0.0/0"], "action": ["accept", "allow"] },
+      "match": {
+        "dstaddr": ["any", "all", "0.0.0.0/0"],
+        "action": ["accept", "allow"]
+      },
       "severity": "HIGH"
     },
     "allow_all_service": {
       "enabled": true,
-      "match": { "service": ["all", "ip/0", "any"], "action": ["accept", "allow"] },
+      "match": {
+        "service": ["all", "ip/0", "any"],
+        "action": ["accept", "allow"]
+      },
       "severity": "HIGH"
     },
-
     "admin_port_exposed": {
       "enabled": true,
-      "match_ports": { "dst_port": ["22", "23", "3389", "5900", "5985", "5986"] },
-      "action": ["accept", "allow"],
+      "match_ports": { "service": ["22", "23", "3389", "5900", "5985", "5986"] },
+      "action_scope": ["accept", "allow"],
       "severity": "CRITICAL"
     },
-    
     "smb_netbios_exposed": {
       "enabled": true,
-      "match": {
-        "service": ["nbt_", "tcp_135", "microsoft-ds", "tcp_445"]
-      },
-      "action": ["accept", "allow"],
+      "match_ports": { "service": ["137", "138", "139", "445"] },
+      "action_scope": ["accept", "allow"],
       "severity": "CRITICAL"
     },
-
     "service_admin_port_exposed": {
       "enabled": true,
       "match_ports": { "service": ["22", "23", "3389", "5900", "5985", "5986"] },
-      "action": ["accept", "allow"],
+      "action_scope": ["accept", "allow"],
       "severity": "CRITICAL"
     },
-
     "suspicious_service": {
       "enabled": true,
-      "match_ports": {
-        "service": ["21", "23", "69", "445", "2049"]
-      },
-      "match": {
-        "service": ["microsoft-ds", "nbt", "unknown", "custom", "lpdw0rm", "Remote_Storm", "PIX_8490-tcp"]
-      },
-      "action": ["accept", "allow"],
+      "match": { "service": ["telnet", "ftp", "tftp", "irc"] },
+      "action_scope": ["accept", "allow"],
       "severity": "HIGH"
     },
-
-    "no_logging": {
-      "enabled": true,
-      "match": { "log": ["disable", "no log", "none"], "action": ["accept", "allow"] },
-      "severity": "MEDIUM"
-    },
-
     "broad_ip_range": {
       "enabled": true,
-      "match": { "srcaddr": ["0.0.0.0/0"], "dstaddr": ["0.0.0.0/0"] },
+      "match": {
+        "srcaddr": ["0.0.0.0/0"],
+        "dstaddr": ["0.0.0.0/0"],
+        "action": ["accept", "allow"]
+      },
       "severity": "HIGH"
     },
-
+    "no_logging": {
+      "enabled": true,
+      "match": { "log": ["disable", "no log", "none", "log violation traffic"] },
+      "action_scope": ["accept", "allow"],
+      "severity": "MEDIUM"
+    },
     "weak_protocol": {
       "enabled": true,
-      "match": { "service": ["ftp", "telnet", "http"] },
-      "severity": "HIGH"
+      "match": { "service": ["http", "ftp", "telnet"] },
+      "action_scope": ["accept", "allow"],
+      "severity": "MEDIUM"
     },
-
     "any_source_high_port": {
       "enabled": true,
-      "match": { "srcaddr": ["any", "0.0.0.0/0"] },
-      "match_ports": { "dst_port": ["1024-65535"] },
+      "match": {
+        "srcaddr": ["any", "all", "0.0.0.0/0"],
+        "dst_port": ["1024-65535"],
+        "action": ["accept", "allow"]
+      },
       "severity": "MEDIUM"
     }
   },
 
   "service_port_map": {
     "ssh": "22",
+    "telnet": "23",
     "rdp": "3389",
-    "rdp-tcp": "3389",
-    "ms-rdp": "3389",
     "vnc": "5900",
     "winrm-http": "5985",
     "winrm-https": "5986",
-    "telnet": "23",
-    "ftp": "21",
-    "tftp": "69",
-    "smb": "445",
-    "microsoft-ds": "445",
-    "nbt": "137",
-    "nfs": "2049",
-    "http": "80",
-    "smtp": "25",
-    "smtp-secure": "587"
-  },
-
-  "reporting": {
-    "severity_palette": {
-      "CRITICAL": "#d32f2f",
-      "HIGH": "#f57c00",
-      "MEDIUM": "#fbc02d",
-      "LOW": "#388e3c",
-      "INFO": "#1976d2"
-    }
+    "netbios-ns": "137",
+    "netbios-dgm": "138",
+    "netbios-ssn": "139",
+    "smb": "445"
   }
 }

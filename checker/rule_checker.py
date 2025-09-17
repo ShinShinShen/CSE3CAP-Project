@@ -7,20 +7,35 @@ config = load_config()
 # ✅ Load service port map from JSON instead of hardcoding
 SERVICE_PORT_MAP = config.data.get("service_port_map", {})
 
-def evaluate_severity(issue_type):
-    """Gets severity from JSON config based on risk_rules."""
-    risk_rules = config.data.get("risk_rules", {})
-    return risk_rules.get(issue_type, {}).get("severity", "UNKNOWN")
+def evaluate_severity(issue_type, vendor=None):
+    """Gets severity from JSON config based on vendor or global risk_rules."""
+    if vendor and "vendor_mappings" in config.data:
+        vendor_rules = config.data["vendor_mappings"].get(vendor, {}).get("risk_rules", {})
+        if issue_type in vendor_rules:
+            return vendor_rules[issue_type].get("severity", "UNKNOWN")
+    return config.data.get("risk_rules", {}).get(issue_type, {}).get("severity", "UNKNOWN")
 
 def normalize_service(service_value):
     """Convert service names into port numbers when possible."""
     service_value = str(service_value).lower()
     return SERVICE_PORT_MAP.get(service_value, service_value)
 
-def check_rule(rule):
+def check_rule(rule, vendor=None):
     """Runs all risk checks dynamically from JSON config."""
     findings = []
-    risk_rules = config.data.get("risk_rules", {})
+
+    # ✅ Skip rules that are disabled in the CSV
+    if rule.get("status", "").lower() == "disable":
+        return findings
+
+    # ✅ Choose vendor-specific rules if available
+    risk_rules = {}
+    if vendor and "vendor_mappings" in config.data:
+        risk_rules = config.data["vendor_mappings"].get(vendor, {}).get("risk_rules", {})
+
+    # Fallback to global rules if vendor-specific not found
+    if not risk_rules:
+        risk_rules = config.data.get("risk_rules", {})
 
     for rule_name, rule_details in risk_rules.items():
         if not rule_details.get("enabled", False):
@@ -34,25 +49,31 @@ def check_rule(rule):
         action_scope = rule_details.get("action_scope", [])
 
         match_ok = True
-        matched_fields = []  # track which fields actually matched
+        matched_fields = []
 
         # ✅ Match field values
         for field, values in match_criteria.items():
             rule_value = str(rule.get(field, "")).lower()
             values_normalized = [v.lower() for v in values]
 
+            # ✅ Handle negate logic
+            if field == "srcaddr" and rule.get("srcaddr_negate", "").lower() == "enable":
+                match_ok = False
+                break
+            if field == "dstaddr" and rule.get("dstaddr_negate", "").lower() == "enable":
+                match_ok = False
+                break
+            if field == "service" and rule.get("service_negate", "").lower() == "enable":
+                match_ok = False
+                break
+
             if field == "service":
-                # Split service field into tokens (space, comma, semicolon, line breaks)
                 tokens = re.split(r"[\s,;]+", rule_value)
                 tokens = [t.strip() for t in tokens if t.strip()]
                 matched = [t for t in tokens if t in values_normalized]
-
             elif field == "log":
-                # For log field, compare full string (don’t split "no log")
                 matched = [rule_value] if rule_value in values_normalized else []
-
             else:
-                # Default: check full string against values
                 matched = [rule_value] if rule_value in values_normalized else []
 
             if matched:
@@ -62,23 +83,22 @@ def check_rule(rule):
                 match_ok = False
                 break
 
-        # ✅ Match port values (service OR dst_port)
+        # ✅ Match port values
         for field, ports in match_ports.items():
             values = []
 
             if field == "service":
                 service_field = str(rule.get("service", ""))
-                # Split by spaces, commas, semicolons, or line breaks
                 service_parts = re.split(r"[\s,;]+", service_field)
                 values = [normalize_service(s.strip()) for s in service_parts if s.strip()]
-
+                if rule.get("service_negate", "").lower() == "enable":
+                    match_ok = False
+                    break
             elif field == "dst_port":
                 values = [str(rule.get("dst_port", "")).lower()]
-
             else:
                 values = [str(rule.get(field, "")).lower()]
 
-            # Check if any part matches
             if any(v in [p.lower() for p in ports] for v in values):
                 for v in values:
                     if v in [p.lower() for p in ports]:
@@ -95,7 +115,7 @@ def check_rule(rule):
                         "issue": rule_name,
                         "field": f,
                         "value": "",
-                        "severity": evaluate_severity(rule_name)
+                        "severity": evaluate_severity(rule_name, vendor)
                     })
             continue
 
@@ -105,7 +125,7 @@ def check_rule(rule):
                 "issue": rule_name,
                 "field": "name",
                 "value": rule.get("name", ""),
-                "severity": evaluate_severity(rule_name)
+                "severity": evaluate_severity(rule_name, vendor)
             })
             continue
 
@@ -116,38 +136,37 @@ def check_rule(rule):
                 "issue": rule_name,
                 "field": target_field,
                 "value": rule.get(target_field, ""),
-                "severity": evaluate_severity(rule_name)
+                "severity": evaluate_severity(rule_name, vendor)
             })
             continue
 
         # ✅ Action scope check
-        if action_scope and str(rule.get("action", "")).lower() not in [a.lower() for a in action_scope]:
+        if action_scope and str(rule.get("action", "").lower()) not in [a.lower() for a in action_scope]:
             match_ok = False
 
-        # ✅ Append if still matched
         if match_ok:
             if matched_fields:
-                # record all matched fields + their values
                 for f, v in matched_fields:
                     findings.append({
                         "issue": rule_name,
                         "field": f,
                         "value": v,
-                        "severity": evaluate_severity(rule_name)
+                        "severity": evaluate_severity(rule_name, vendor)
                     })
             else:
                 findings.append({
                     "issue": rule_name,
                     "field": "unspecified",
                     "value": "",
-                    "severity": evaluate_severity(rule_name)
+                    "severity": evaluate_severity(rule_name, vendor)
                 })
 
     return findings
 
-def run_checker(rules):
+def run_checker(rules, vendor=None):
     """Runs check_rule() on each parsed firewall rule."""
     results = {}
     for idx, rule in enumerate(rules, start=1):
-        results[idx] = check_rule(rule)
+        rule_vendor = rule.get("vendor", vendor)
+        results[idx] = check_rule(rule, vendor)
     return results

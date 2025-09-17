@@ -1,108 +1,54 @@
 rule_id,issue,field,value,severity
 1,No issues found,-,-,
 2,no_logging,log,no log,MEDIUM
-2,no_logging,action,accept,MEDIUM
 3,No issues found,-,-,
 4,no_logging,log,no log,MEDIUM
-4,no_logging,action,accept,MEDIUM
 5,no_logging,log,no log,MEDIUM
-5,no_logging,action,accept,MEDIUM
-5,weak_protocol,service,http,HIGH
+5,weak_protocol,service,http,MEDIUM
 6,no_logging,log,no log,MEDIUM
-6,no_logging,action,accept,MEDIUM
 7,no_logging,log,no log,MEDIUM
-7,no_logging,action,accept,MEDIUM
-8,smb_netbios_exposed,service,microsoft-ds,CRITICAL
-8,suspicious_service,service,microsoft-ds,HIGH
-8,suspicious_service,service,445,HIGH
 8,no_logging,log,no log,MEDIUM
-8,no_logging,action,accept,MEDIUM
 9,no_logging,log,no log,MEDIUM
-9,no_logging,action,accept,MEDIUM
-10,smb_netbios_exposed,service,tcp_135,CRITICAL
 10,no_logging,log,no log,MEDIUM
-10,no_logging,action,accept,MEDIUM
 11,no_logging,log,no log,MEDIUM
-11,no_logging,action,accept,MEDIUM
-11,weak_protocol,service,http,HIGH
+11,weak_protocol,service,http,MEDIUM
 12,no_logging,log,no log,MEDIUM
-12,no_logging,action,accept,MEDIUM
 13,no_logging,log,no log,MEDIUM
-13,no_logging,action,accept,MEDIUM
 14,No issues found,-,-,
 15,No issues found,-,-,
-16,weak_protocol,service,http,HIGH
+16,weak_protocol,service,http,MEDIUM
 17,allow_all_destination_port,dstaddr,any,HIGH
 17,allow_all_destination_port,action,accept,HIGH
 17,no_logging,log,no log,MEDIUM
-17,no_logging,action,accept,MEDIUM
 18,No issues found,-,-,
 19,no_logging,log,no log,MEDIUM
-19,no_logging,action,accept,MEDIUM
 20,No issues found,-,-,
 21,No issues found,-,-,
-22,smb_netbios_exposed,service,nbt_,CRITICAL
-22,smb_netbios_exposed,service,tcp_135,CRITICAL
-22,smb_netbios_exposed,service,microsoft-ds,CRITICAL
-22,suspicious_service,service,microsoft-ds,HIGH
-22,suspicious_service,service,445,HIGH
 22,no_logging,log,no log,MEDIUM
-22,no_logging,action,accept,MEDIUM
-23,smb_netbios_exposed,service,nbt_,CRITICAL
-23,smb_netbios_exposed,service,tcp_135,CRITICAL
-23,smb_netbios_exposed,service,microsoft-ds,CRITICAL
-23,suspicious_service,service,microsoft-ds,HIGH
-23,suspicious_service,service,445,HIGH
 23,no_logging,log,no log,MEDIUM
-23,no_logging,action,accept,MEDIUM
-24,smb_netbios_exposed,service,nbt_,CRITICAL
-24,smb_netbios_exposed,service,tcp_135,CRITICAL
-24,smb_netbios_exposed,service,microsoft-ds,CRITICAL
-24,suspicious_service,service,microsoft-ds,HIGH
-24,suspicious_service,service,445,HIGH
-25,smb_netbios_exposed,service,nbt_,CRITICAL
-25,smb_netbios_exposed,service,tcp_135,CRITICAL
-25,smb_netbios_exposed,service,microsoft-ds,CRITICAL
-25,suspicious_service,service,microsoft-ds,HIGH
-25,suspicious_service,service,445,HIGH
-26,smb_netbios_exposed,service,nbt_,CRITICAL
-26,smb_netbios_exposed,service,tcp_135,CRITICAL
-26,smb_netbios_exposed,service,microsoft-ds,CRITICAL
-26,suspicious_service,service,microsoft-ds,HIGH
-26,suspicious_service,service,445,HIGH
+24,No issues found,-,-,
+25,No issues found,-,-,
+26,No issues found,-,-,
 27,allow_all_destination_port,dstaddr,any,HIGH
 27,allow_all_destination_port,action,accept,HIGH
+27,admin_port_exposed,service,22,CRITICAL
 27,service_admin_port_exposed,service,22,CRITICAL
-27,weak_protocol,service,ftp,HIGH
-27,weak_protocol,service,http,HIGH
+27,suspicious_service,service,ftp,HIGH
+27,weak_protocol,service,ftp,MEDIUM
+27,weak_protocol,service,http,MEDIUM
 28,No issues found,-,-,
 29,no_logging,log,no log,MEDIUM
-29,no_logging,action,accept,MEDIUM
 30,No issues found,-,-,
 31,No issues found,-,-,
 32,no_logging,log,no log,MEDIUM
-32,no_logging,action,accept,MEDIUM
 33,No issues found,-,-,
 34,no_logging,log,no log,MEDIUM
-34,no_logging,action,accept,MEDIUM
 35,no_logging,log,no log,MEDIUM
-35,no_logging,action,accept,MEDIUM
-35,weak_protocol,service,http,HIGH
-36,smb_netbios_exposed,service,tcp_135,CRITICAL
+35,weak_protocol,service,http,MEDIUM
 36,no_logging,log,no log,MEDIUM
-36,no_logging,action,accept,MEDIUM
-36,weak_protocol,service,http,HIGH
+36,weak_protocol,service,http,MEDIUM
 37,no_logging,log,no log,MEDIUM
-37,no_logging,action,accept,MEDIUM
 38,no_logging,log,no log,MEDIUM
-38,no_logging,action,accept,MEDIUM
-38,weak_protocol,service,http,HIGH
+38,weak_protocol,service,http,MEDIUM
 39,no_logging,log,no log,MEDIUM
-39,no_logging,action,accept,MEDIUM
-40,smb_netbios_exposed,service,nbt_,CRITICAL
-40,smb_netbios_exposed,service,tcp_135,CRITICAL
-40,smb_netbios_exposed,service,microsoft-ds,CRITICAL
-40,suspicious_service,service,microsoft-ds,HIGH
-40,suspicious_service,service,445,HIGH
 40,no_logging,log,no log,MEDIUM
-40,no_logging,action,accept,MEDIUM
