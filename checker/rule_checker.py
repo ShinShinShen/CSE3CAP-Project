@@ -41,6 +41,34 @@ def check_rule(rule, vendor=None):
         if not rule_details.get("enabled", False):
             continue
 
+        # ✅ Special case: broad_ip_range → use OR logic and values from JSON
+        if rule_name.lower() == "broad_ip_range":
+            action_value = str(rule.get("action", "")).lower()
+            allowed_actions = [a.lower() for a in rule_details.get("action_scope", [])]
+            risky_values = [v.lower() for v in rule_details.get("values", [])]
+
+            if action_value in allowed_actions:
+                for field in ["srcaddr", "dstaddr", "src_address", "dst_address"]:
+                    val = str(rule.get(field, "")).strip().lower()
+                    if not val:
+                        continue
+
+                    # Split into tokens (handles "all, something", spaces, semicolons, etc.)
+                    tokens = re.split(r"[\s,;]+", val)
+                    tokens = [t.strip() for t in tokens if t.strip()]
+
+                    if any(t in risky_values for t in tokens):
+                        findings.append({
+                            "issue": rule_name,
+                            "field": field,
+                            "value": rule.get(field, ""),
+                            "severity": evaluate_severity(rule_name, vendor)
+                        })
+            continue  # skip default logic for this rule
+
+        # -----------------------------
+        # Normal rules (AND logic)
+        # -----------------------------
         match_criteria = rule_details.get("match", {})
         match_ports = rule_details.get("match_ports", {})
         required_fields = rule_details.get("required_fields", [])
@@ -73,8 +101,12 @@ def check_rule(rule, vendor=None):
                 matched = [t for t in tokens if t in values_normalized]
             elif field == "log":
                 matched = [rule_value] if rule_value in values_normalized else []
-            else:
+            elif field in ["src_address", "dst_address"]:
                 matched = [rule_value] if rule_value in values_normalized else []
+            else:
+                tokens = re.split(r"[\s,;]+", rule_value)
+                tokens = [t.strip() for t in tokens if t.strip()]
+                matched = [t for t in tokens if t in values_normalized]
 
             if matched:
                 for m in matched:

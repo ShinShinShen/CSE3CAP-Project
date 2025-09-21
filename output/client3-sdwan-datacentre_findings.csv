@@ -1,0 +1,28 @@
+rule_id,issue,field,value,severity
+1,No issues found,-,-,
+2,No issues found,-,-,
+3,No issues found,-,-,
+4,No issues found,-,-,
+5,No issues found,-,-,
+6,No issues found,-,-,
+7,allow_all_service,service,all,HIGH
+7,allow_all_service,action,accept,HIGH
+8,allow_all_service,service,all,HIGH
+8,allow_all_service,action,accept,HIGH
+9,allow_all_service,service,all,HIGH
+9,allow_all_service,action,accept,HIGH
+10,allow_all_service,service,all,HIGH
+10,allow_all_service,action,accept,HIGH
+11,allow_all_service,service,all,HIGH
+11,allow_all_service,action,accept,HIGH
+12,allow_all_service,service,all,HIGH
+12,allow_all_service,action,accept,HIGH
+13,allow_all_service,service,all,HIGH
+13,allow_all_service,action,accept,HIGH
+14,allow_all_service,service,all,HIGH
+14,allow_all_service,action,accept,HIGH
+15,allow_all_service,service,all,HIGH
+15,allow_all_service,action,accept,HIGH
+16,allow_all_service,service,all,HIGH
+16,allow_all_service,action,accept,HIGH
+17,No issues found,-,-,

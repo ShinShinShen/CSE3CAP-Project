@@ -1,11 +1,9 @@
 rule_id,issue,field,value,severity
-1,admin_port_exposed,service,22,CRITICAL
-1,service_admin_port_exposed,service,22,CRITICAL
-2,weak_protocol,service,http,MEDIUM
+1,Admin_Port_Exposed,service,22,CRITICAL
+2,Weak_Protocol,service,http,HIGH
 3,allow_all_destination_port,dstaddr,any,HIGH
 3,allow_all_destination_port,action,accept,HIGH
-3,admin_port_exposed,service,3389,CRITICAL
-3,service_admin_port_exposed,service,3389,CRITICAL
+3,Admin_Port_Exposed,service,3389,CRITICAL
 4,allow_all_destination_port,dstaddr,any,HIGH
 4,allow_all_destination_port,action,accept,HIGH
-5,No issues found,-,-,
+5,suspicious_service,service,smtp,High

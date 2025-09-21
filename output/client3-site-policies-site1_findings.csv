@@ -1,10 +1,10 @@
 rule_id,issue,field,value,severity
 1,allow_all_destination_port,dstaddr,all,HIGH
 1,allow_all_destination_port,action,accept,HIGH
-1,service_admin_port_exposed,service,22,CRITICAL
+1,Admin_Port_Exposed,service,22,CRITICAL
 2,allow_all_destination_port,dstaddr,all,HIGH
 2,allow_all_destination_port,action,accept,HIGH
-2,service_admin_port_exposed,service,22,CRITICAL
+2,Admin_Port_Exposed,service,22,CRITICAL
 3,allow_all_service,service,all,HIGH
 3,allow_all_service,action,accept,HIGH
 4,No issues found,-,-,

@@ -89,6 +89,7 @@ def export_findings_to_pdf(results, file_path, output_pdf):
     pdf = PDFReport()
     pdf.add_page()
     pdf.add_summary(os.path.basename(file_path), total_rules, total_risks, severity_count)
+    pdf.add_severity_chart(severity_count)
     pdf.add_table(findings)
     pdf.output(output_pdf)
 
@@ -158,6 +159,7 @@ def main():
 
             if file_path is None:
                 continue
+
 
             process_file(file_path, args.vendor)
             args.vendor = None

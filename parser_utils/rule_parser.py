@@ -238,6 +238,8 @@ def parse_file(file_path, vendor=None):
                         "name": get_col_value(row, df, "name", mappings),
                         "srcaddr": set(),
                         "dstaddr": set(),
+                        "src_address": set(),   # NEW
+                        "dst_address": set(),   # NEW
                         "service": set(),
                         "action": get_col_value(row, df, "action", mappings),
                         "log": get_col_value(row, df, "log", mappings),
@@ -250,6 +252,7 @@ def parse_file(file_path, vendor=None):
                         "vendor": vendor
                     }
 
+                # Normal columns
                 src = get_col_value(row, df, "srcaddr", mappings)
                 if src: grouped[rid]["srcaddr"].add(src)
 
@@ -258,6 +261,21 @@ def parse_file(file_path, vendor=None):
 
                 svc = get_col_value(row, df, "service", mappings)
                 if svc: grouped[rid]["service"].add(svc)
+
+                # Explicit F and I columns (index 5 and 8, zero-based)
+                try:
+                    src_address = str(row.iloc[5]).strip()
+                    if src_address and src_address.lower() not in ["nan", "none"]:
+                        grouped[rid]["src_address"].add(src_address)
+                except Exception:
+                    pass
+
+                try:
+                    dst_address = str(row.iloc[8]).strip()
+                    if dst_address and dst_address.lower() not in ["nan", "none"]:
+                        grouped[rid]["dst_address"].add(dst_address)
+                except Exception:
+                    pass
 
             for rid, rule in grouped.items():
                 service_str = ", ".join(sorted(rule["service"]))
@@ -268,6 +286,8 @@ def parse_file(file_path, vendor=None):
                     "dstaddr": ", ".join(sorted(rule["dstaddr"])),
                     "service": service_str,
                     "dst_port": extract_port(service_str),
+                    "src_address": ", ".join(sorted(rule["src_address"])),   # NEW
+                    "dst_address": ", ".join(sorted(rule["dst_address"])),   # NEW
                     "action": rule["action"],
                     "log": rule["log"],
                     "comment": rule["comment"],
