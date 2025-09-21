@@ -6,7 +6,8 @@ This project requires the following Python libraries:
 
 - [pandas](https://pandas.pydata.org/) — for data processing and analysis  
 - [openpyxl](https://openpyxl.readthedocs.io/) — for reading and writing (`.xlsx`) files  
-- [fpdf2](https://py-pdf.github.io/fpdf2/) — for generating PDF reports  
+- [fpdf2](https://py-pdf.github.io/fpdf2/) — for generating PDF reports 
+- matplotlib — for generating severity distribution charts 
 
 All dependencies are listed in the [`requirements.txt`] file.  
 
