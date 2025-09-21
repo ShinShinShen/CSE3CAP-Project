@@ -17,3 +17,10 @@ To install them into your environment, run:
 pip install -r requirements.txt
 ```
 The above will take care of any and all dependencies required for this project, installing them all for you in single command.
+
+
+
+
+
+## 📜 License
+This project is licensed under the **GNU General Public License v3.0** - see the [LICENSE](LICENSE) file for details.
