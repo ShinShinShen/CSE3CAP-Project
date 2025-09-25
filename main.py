@@ -43,6 +43,7 @@ def start_menu():
         else:
             print("Invalid choice, please enter 1 or 2.")
 
+
 def export_findings_to_csv(results, output_path):
     """Writes findings dictionary to a CSV file."""
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
@@ -73,7 +74,8 @@ def export_findings_to_csv(results, output_path):
 
     print(f"\n Technical findings exported to {output_path}")
 
-def export_findings_to_pdf(results, file_path, output_pdf):
+
+def export_findings_to_pdf(results, file_path, output_pdf, vendor=None):
     """Generate PDF report from findings."""
     findings = []
     severity_count = {}
@@ -105,12 +107,13 @@ def export_findings_to_pdf(results, file_path, output_pdf):
 
     pdf = PDFReport()
     pdf.add_page()
-    pdf.add_summary(os.path.basename(file_path), total_rules, total_risks, severity_count)
+    pdf.add_summary(os.path.basename(file_path), total_rules, total_risks, severity_count, vendor)
     pdf.add_severity_chart(severity_count)
     pdf.add_table(findings)
     pdf.output(output_pdf)
 
     print(f" PDF report exported to {output_pdf}")
+
 
 # -----------------------
 # Main program
@@ -148,7 +151,8 @@ def process_file(file_path, vendor=None):
     pdf_path = os.path.join("output", f"{base_name}_report.pdf")
 
     export_findings_to_csv(results, csv_path)
-    export_findings_to_pdf(results, file_path, pdf_path)
+    export_findings_to_pdf(results, file_path, pdf_path, vendor)
+
 
 def main():
     parser_args = argparse.ArgumentParser(description="Firewall Risk Identification Tool - FireFind")
@@ -177,9 +181,9 @@ def main():
             if file_path is None:
                 continue
 
-
             process_file(file_path, args.vendor)
             args.vendor = None
+
 
 # Entry point
 if __name__ == "__main__":

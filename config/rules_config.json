@@ -1,6 +1,6 @@
 {
   "vendor_mappings": {
-    "fortinet": {
+    "client 1 or 3 xlsx": {
       "detect_headers_any": ["seq #", "source", "destination", "service", "action"],
       "columns": {
         "id": ["seq #"],
@@ -39,6 +39,25 @@
       }
     },
 
+    "client2": {
+      "detect_headers_any": ["id", "uuid", "srcintf", "dstintf", "srcaddr", "dstaddr", "service", "action"],
+      "columns": {
+        "id": ["id"],
+        "name": ["name"],
+        "srcaddr": ["srcaddr"],
+        "dstaddr": ["dstaddr"],
+        "service": ["service"],
+        "action": ["action"],
+        "log": ["logtraffic"],
+        "comment": ["comments", "tl comment"],
+        "risk_rating": ["rating"]
+      },
+      "defaults": {
+        "log": "all",
+        "comment": ""
+      }
+    },
+
     "client3_csv": {
       "detect_headers_any": ["policyid", "srcaddr", "dstaddr", "service", "action"],
       "columns": {
@@ -55,6 +74,7 @@
         "dstaddr_negate": ["dstaddr-negate"],
         "service_negate": ["service-negate"]
       },
+
       "defaults": {
         "log": "log all sessions",
         "comment": "",

@@ -218,5 +218,5 @@ def run_checker(rules, vendor=None):
     results = {}
     for idx, rule in enumerate(rules, start=1):
         rule_vendor = rule.get("vendor", vendor)
-        results[idx] = check_rule(rule, vendor)
+        results[idx] = check_rule(rule, rule_vendor)
     return results

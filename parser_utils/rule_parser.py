@@ -1,56 +1,26 @@
-# This file is part of FireFind Project.
-#
-# Copyright (C) 2025 Your Name
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 import csv
 import pandas as pd
 import re
+import os
 from config.config_loader import load_config
 
 config = load_config()
 
+
 def detect_vendor(file_path):
-    """Detect vendor type based on headers (CSV or XLSX)."""
-    headers = []
+    """Detect vendor type based on filename first, then headers (CSV or XLSX)."""
+    file_name = os.path.basename(file_path).lower()
 
-    if file_path.endswith(".csv"):
-        with open(file_path, newline='', encoding="utf-8") as csvfile:
-            reader = list(csv.reader(csvfile))
-
-        # Flatten first rows for detection
-        flat = [str(cell).strip().lower() for row in reader[:15] for cell in row]
-
-        # Detect Client3 CSV by marker row
-        if any("ipv4 local in policy" in cell for cell in flat):
+    if "client1" in file_name:
+        return "client 1 or 3 xlsx"
+    if "client2" in file_name:
+        return "client2"
+    if "client3" in file_name:
+        if file_name.endswith(".csv"):
             return "client3_csv"
+        if file_name.endswith(".xlsx"):
+            return "client 1 or 3 xlsx"  # Client3 XLSX uses same format as Client1
 
-        headers = [h.strip().lower() for h in reader[0]]
-
-    elif file_path.endswith(".xlsx"):
-        df = pd.read_excel(file_path, sheet_name=0, dtype=str, header=None, engine="openpyxl")
-        for _, row in df.iterrows():
-            row_lower = [str(cell).strip().lower() for cell in row.values]
-            if "seq #" in row_lower and "action" in row_lower:
-                headers = row_lower
-                break
-
-    for vendor, mapping in config.data["vendor_mappings"].items():
-        for required in mapping.get("detect_headers_any", []):
-            if required.lower() in headers:
-                return vendor
     return None
 
 
@@ -70,9 +40,7 @@ def extract_port(service_str):
     if not service_str:
         return ""
     match = re.search(r"(\d+)", service_str)
-    if match:
-        return match.group(1)
-    return ""
+    return match.group(1) if match else ""
 
 
 def parse_file(file_path, vendor=None):
@@ -144,7 +112,7 @@ def parse_file(file_path, vendor=None):
                     "vendor": vendor
                 })
 
-        # ---------------- Other CSV (Fortinet, etc.) ----------------
+        # ---------------- Other CSV (Client1 etc.) ----------------
         elif file_path.endswith(".csv"):
             df = pd.read_csv(file_path, dtype=str)
             df = df.fillna("")
@@ -178,9 +146,6 @@ def parse_file(file_path, vendor=None):
                         "comment": get_col_value(row, df, "comment", mappings),
                         "risk_rating": get_col_value(row, df, "risk_rating", mappings),
                         "status": get_col_value(row, df, "status", mappings),
-                        "srcaddr_negate": get_col_value(row, df, "srcaddr_negate", mappings),
-                        "dstaddr_negate": get_col_value(row, df, "dstaddr_negate", mappings),
-                        "service_negate": get_col_value(row, df, "service_negate", mappings),
                         "vendor": vendor
                     }
 
@@ -207,32 +172,39 @@ def parse_file(file_path, vendor=None):
                     "comment": rule["comment"],
                     "risk_rating": rule["risk_rating"],
                     "status": rule["status"],
-                    "srcaddr_negate": rule["srcaddr_negate"],
-                    "dstaddr_negate": rule["dstaddr_negate"],
-                    "service_negate": rule["service_negate"],
                     "vendor": rule["vendor"]
                 })
 
         # ---------------- XLSX ----------------
         elif file_path.endswith(".xlsx"):
-            df_all = pd.read_excel(file_path, sheet_name=0, dtype=str, header=None, engine="openpyxl")
 
-            first_header_idx = None
-            for i, row in df_all.iterrows():
-                row_lower = [str(cell).strip().lower() for cell in row.values]
-                if "seq #" in row_lower and "action" in row_lower:
-                    first_header_idx = i
-                    break
+            # -------- Client2 XLSX (separate branch) --------
+            if vendor == "client2":
+                df = pd.read_excel(file_path, sheet_name=0, dtype=str, header=0, engine="openpyxl")
+                df = df.fillna("")
+                df.columns = [str(c).strip().lower() for c in df.columns]
 
-            if first_header_idx is None:
-                return []
+            # -------- Client1/3 XLSX (original logic) --------
+            else:
+                df_all = pd.read_excel(file_path, sheet_name=0, dtype=str, header=None, engine="openpyxl")
 
-            df = pd.read_excel(file_path, sheet_name=0, dtype=str, header=first_header_idx, engine="openpyxl")
-            df = df.fillna("")
-            df.columns = [str(c).strip().lower() for c in df.columns]
-            df = df.loc[:, ~df.columns.str.contains("^unnamed")]
-            df = df[~df['seq #'].str.contains("seq #", case=False, na=False)]
+                first_header_idx = None
+                for i, row in df_all.iterrows():
+                    row_lower = [str(cell).strip().lower() for cell in row.values]
+                    if "seq #" in row_lower and "action" in row_lower:
+                        first_header_idx = i
+                        break
 
+                if first_header_idx is None:
+                    return []
+
+                df = pd.read_excel(file_path, sheet_name=0, dtype=str, header=first_header_idx, engine="openpyxl")
+                df = df.fillna("")
+                df.columns = [str(c).strip().lower() for c in df.columns]
+                df = df.loc[:, ~df.columns.str.contains("^unnamed")]
+                df = df[~df['seq #'].str.contains("seq #", case=False, na=False)]
+
+            # -------- Shared grouping & rule building --------
             id_field = None
             for alias in mappings.get("id", []):
                 if alias.lower() in df.columns:
@@ -246,7 +218,7 @@ def parse_file(file_path, vendor=None):
             grouped = {}
             for _, row in df.iterrows():
                 rid = get_col_value(row, df, "id", mappings)
-                if not rid or not rid.isdigit():
+                if not rid or not str(rid).isdigit():
                     continue
 
                 if rid not in grouped:
@@ -255,21 +227,15 @@ def parse_file(file_path, vendor=None):
                         "name": get_col_value(row, df, "name", mappings),
                         "srcaddr": set(),
                         "dstaddr": set(),
-                        "src_address": set(),   # NEW
-                        "dst_address": set(),   # NEW
                         "service": set(),
                         "action": get_col_value(row, df, "action", mappings),
                         "log": get_col_value(row, df, "log", mappings),
                         "comment": get_col_value(row, df, "comment", mappings),
                         "risk_rating": get_col_value(row, df, "risk_rating", mappings),
                         "status": get_col_value(row, df, "status", mappings),
-                        "srcaddr_negate": get_col_value(row, df, "srcaddr_negate", mappings),
-                        "dstaddr_negate": get_col_value(row, df, "dstaddr_negate", mappings),
-                        "service_negate": get_col_value(row, df, "service_negate", mappings),
                         "vendor": vendor
                     }
 
-                # Normal columns
                 src = get_col_value(row, df, "srcaddr", mappings)
                 if src: grouped[rid]["srcaddr"].add(src)
 
@@ -278,21 +244,6 @@ def parse_file(file_path, vendor=None):
 
                 svc = get_col_value(row, df, "service", mappings)
                 if svc: grouped[rid]["service"].add(svc)
-
-                # Explicit F and I columns (index 5 and 8, zero-based)
-                try:
-                    src_address = str(row.iloc[5]).strip()
-                    if src_address and src_address.lower() not in ["nan", "none"]:
-                        grouped[rid]["src_address"].add(src_address)
-                except Exception:
-                    pass
-
-                try:
-                    dst_address = str(row.iloc[8]).strip()
-                    if dst_address and dst_address.lower() not in ["nan", "none"]:
-                        grouped[rid]["dst_address"].add(dst_address)
-                except Exception:
-                    pass
 
             for rid, rule in grouped.items():
                 service_str = ", ".join(sorted(rule["service"]))
@@ -303,16 +254,11 @@ def parse_file(file_path, vendor=None):
                     "dstaddr": ", ".join(sorted(rule["dstaddr"])),
                     "service": service_str,
                     "dst_port": extract_port(service_str),
-                    "src_address": ", ".join(sorted(rule["src_address"])),   # NEW
-                    "dst_address": ", ".join(sorted(rule["dst_address"])),   # NEW
                     "action": rule["action"],
                     "log": rule["log"],
                     "comment": rule["comment"],
                     "risk_rating": rule["risk_rating"],
                     "status": rule["status"],
-                    "srcaddr_negate": rule["srcaddr_negate"],
-                    "dstaddr_negate": rule["dstaddr_negate"],
-                    "service_negate": rule["service_negate"],
                     "vendor": rule["vendor"]
                 })
 

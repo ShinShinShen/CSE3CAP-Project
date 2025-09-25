@@ -1,0 +1,70 @@
+rule_id,issue,field,value,severity
+1,suspicious_service,service,smtp,High
+2,No issues found,-,-,
+3,No issues found,-,-,
+4,No issues found,-,-,
+5,No issues found,-,-,
+6,No issues found,-,-,
+7,allow_all_destination_port,dstaddr,all,HIGH
+7,allow_all_destination_port,action,accept,HIGH
+7,Admin_Port_Exposed,service,22,CRITICAL
+7,broad_ip_range,dstaddr,all,HIGH
+8,No issues found,-,-,
+9,suspicious_service,service,ldap,High
+10,Admin_Port_Exposed,service,22,CRITICAL
+10,Weak_Protocol,service,http,HIGH
+11,No issues found,-,-,
+12,suspicious_service,service,ldap,High
+13,No issues found,-,-,
+14,Admin_Port_Exposed,service,22,CRITICAL
+15,allow_all_service,service,all,HIGH
+15,allow_all_service,action,accept,HIGH
+16,allow_all_destination_port,dstaddr,all,HIGH
+16,allow_all_destination_port,action,accept,HIGH
+16,allow_all_service,service,any,HIGH
+16,allow_all_service,action,accept,HIGH
+16,broad_ip_range,dstaddr,all,HIGH
+17,allow_all_service,service,all,HIGH
+17,allow_all_service,action,accept,HIGH
+18,allow_all_service,service,all,HIGH
+18,allow_all_service,action,accept,HIGH
+19,allow_all_service,service,any,HIGH
+19,allow_all_service,action,accept,HIGH
+20,No issues found,-,-,
+21,No issues found,-,-,
+22,allow_all_source_port,srcaddr,all,HIGH
+22,allow_all_source_port,action,accept,HIGH
+22,broad_ip_range,srcaddr,all,HIGH
+23,allow_all_source_port,srcaddr,all,HIGH
+23,allow_all_source_port,action,accept,HIGH
+23,broad_ip_range,srcaddr,all,HIGH
+23,Weak_Protocol,service,http,HIGH
+24,allow_all_source_port,srcaddr,all,HIGH
+24,allow_all_source_port,action,accept,HIGH
+24,broad_ip_range,srcaddr,all,HIGH
+24,Weak_Protocol,service,http,HIGH
+25,Admin_Port_Exposed,service,22,CRITICAL
+26,Weak_Protocol,service,http,HIGH
+27,No issues found,-,-,
+28,No issues found,-,-,
+29,No issues found,-,-,
+30,No issues found,-,-,
+31,No issues found,-,-,
+32,allow_all_destination_port,dstaddr,all,HIGH
+32,allow_all_destination_port,action,accept,HIGH
+32,broad_ip_range,dstaddr,all,HIGH
+33,Weak_Protocol,service,http,HIGH
+34,Weak_Protocol,service,http,HIGH
+35,No issues found,-,-,
+36,No issues found,-,-,
+37,Weak_Protocol,service,http,HIGH
+38,Weak_Protocol,service,http,HIGH
+39,Admin_Port_Exposed,service,22,CRITICAL
+40,No issues found,-,-,
+41,No issues found,-,-,
+42,Weak_Protocol,service,http,HIGH
+43,No issues found,-,-,
+44,Weak_Protocol,service,http,HIGH
+45,No issues found,-,-,
+46,Weak_Protocol,service,http,HIGH
+47,No issues found,-,-,

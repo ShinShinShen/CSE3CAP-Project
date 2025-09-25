@@ -32,10 +32,15 @@ class PDFReport(FPDF):
         self.set_text_color(100)
         self.cell(0, 10, f"Page {self.page_no()}", align="C")
 
-    def add_summary(self, filename, total_rules, total_risks, severity_count):
+    def add_summary(self, filename, total_rules, total_risks, severity_count, vendor=None):
         self.set_text_color(0)
         self.set_font("Helvetica", "", 12)
         self.cell(0, 10, f"File Analyzed: {filename}", ln=True)
+
+        # ✅ New line: show vendor
+        if vendor:
+            self.cell(0, 10, f"File Belongs to: {vendor.title()}", ln=True)
+
         self.cell(0, 10, f"Total Rules Analyzed: {total_rules}", ln=True)
         self.cell(0, 10, f"Total Risks Found: {total_risks}", ln=True)
         self.ln(5)
