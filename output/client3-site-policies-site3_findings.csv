@@ -6,7 +6,7 @@ rule_id,issue,field,value,severity
 1,service_admin_port_exposed_client3,service_negate,disable,CRITICAL
 1,service_admin_port_exposed_client3,status,enable,CRITICAL
 1,service_admin_port_exposed_client3,action,accept,CRITICAL
-1,service_admin_port_exposed_client3,service,22,CRITICAL
+1,service_admin_port_exposed_client3,service,ssh,CRITICAL
 2,allow_all_destination_port_client3,dstaddr,all,HIGH
 2,allow_all_destination_port_client3,dstaddr_negate,disable,HIGH
 2,allow_all_destination_port_client3,status,enable,HIGH
@@ -14,7 +14,7 @@ rule_id,issue,field,value,severity
 2,service_admin_port_exposed_client3,service_negate,disable,CRITICAL
 2,service_admin_port_exposed_client3,status,enable,CRITICAL
 2,service_admin_port_exposed_client3,action,accept,CRITICAL
-2,service_admin_port_exposed_client3,service,22,CRITICAL
+2,service_admin_port_exposed_client3,service,ssh,CRITICAL
 3,allow_all_service_client3,service,all,HIGH
 3,allow_all_service_client3,service_negate,disable,HIGH
 3,allow_all_service_client3,status,enable,HIGH

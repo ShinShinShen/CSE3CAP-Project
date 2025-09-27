@@ -114,7 +114,7 @@
         "service_admin_port_exposed_client3": {
           "enabled": true,
           "match_ports": {
-            "service": ["22", "23", "3389", "5900", "5985", "5986"]
+            "service": ["ssh", "23", "3389", "5900", "5985", "5986"]
           },
           "match": {
             "service_negate": ["disable"],
@@ -181,18 +181,18 @@
         "service": ["all", "ip/0", "any"],
         "action": ["accept", "allow"]
       },
-      "severity": "HIGH"
+      "severity": "MEDIUM"
     },
 
-    "smb_Netbios_Exposed": {
+    "smb_netbios_exposed": {
       "enabled": true,
-      "match_ports": { "service": ["137", "135", "138", "139", "445"] },
+      "match_ports": { "service": ["137", "135", "138", "139", "445", "netbios"] },
       "action_scope": ["accept", "allow"],
       "severity": "CRITICAL"
     },
-    "Admin_Port_Exposed": {
+    "admin_port_exposed": {
       "enabled": true,
-      "match_ports": { "service": ["22", "23", "3389", "5900", "5985", "5986"] },
+      "match_ports": { "service": ["ssh", "23", "3389", "5900", "5985", "5986", "rdp"] },
       "action_scope": ["accept", "allow"],
       "severity": "CRITICAL"
     },
@@ -216,13 +216,13 @@
         "severity": "HIGH"
     },
 
-    "No_logging_error": {
+    "no_logging_error": {
       "enabled": true,
       "match": { "log": ["disable", "no log", "none", "log violation traffic"] },
       "action_scope": ["accept", "allow"],
       "severity": "MEDIUM"
     },
-    "Weak_Protocol": {
+    "weak_protocol": {
       "enabled": true,
       "match": { "service": ["http", "ftp", "telnet"] },
       "action_scope": ["accept", "allow"],
@@ -240,7 +240,7 @@
   },
 
   "service_port_map": {
-    "ssh": "22",
+    "ssh": "ssh",
     "telnet": "23",
     "rdp": "3389",
     "vnc": "5900",
@@ -249,6 +249,8 @@
     "nbt": "137",
     "netbios-dgm": "138",
     "tcp_135": "135",
-    "microsoft-ds": "445"
+    "microsoft-ds": "445",
+    "[rdp]": "rdp",
+    "grp_netbios": "netbios"
   }
 }
