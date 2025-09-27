@@ -2,15 +2,20 @@ from fpdf import FPDF
 import matplotlib.pyplot as plt
 from datetime import datetime
 from PIL import Image, ImageDraw
+import os
+
+# Ensure the folder for charts exists
+OUTPUT_DIR = "report_charts"
+os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 class PDFReport(FPDF):
     def header(self):
-        # Draw a border (dark green) around the page
+        # Draw a border (light green) around the page
         self.set_draw_color(127, 255, 0)
         self.set_line_width(0.6)
         self.rect(5, 5, 200, 287) 
 
-        # Keep the title or logo here as before
+        # Title
         self.set_font("Arial", "B", 17)
         self.set_fill_color(144, 238, 144)  # light green header
         self.set_text_color(0)
@@ -23,14 +28,16 @@ class PDFReport(FPDF):
         self.set_text_color(100)
         self.cell(0, 10, f"Page {self.page_no()}", align="C")
 
-    def make_circular_logo(self, logo_path, output_path="circular_logo.png"):
-        """Convert logo into a circular PNG"""
+    def make_circular_logo(self, logo_path, output_name="circular_logo.png"):
+        """Save circular logo in report_charts folder and return its path"""
         img = Image.open(logo_path).convert("RGBA")
         w, h = img.size
         mask = Image.new("L", (w, h), 0)
         draw = ImageDraw.Draw(mask)
         draw.ellipse((0, 0, w, h), fill=255)
         img.putalpha(mask)
+
+        output_path = os.path.join(OUTPUT_DIR, output_name)
         img.save(output_path)
         return output_path
 
@@ -91,14 +98,14 @@ class PDFReport(FPDF):
 
         self.ln(8)
 
-    def add_severity_chart(self, severity_count, chart_path="severity_chart.png"):
+    def add_severity_chart(self, severity_count):
         if not severity_count:
             return
 
         severity_colors = {
-            "CRITICAL": (255/255, 50/255, 50/255),
-            "HIGH": (255/255, 100/255, 0/255),
-            "MEDIUM": (255/255, 200/255, 0/255),
+            "CRITICAL": (1.0, 50/255, 50/255),
+            "HIGH": (1.0, 100/255, 0),
+            "MEDIUM": (1.0, 200/255, 0),
             "LOW": (180/255, 220/255, 100/255),
             "INFO": (220/255, 220/255, 220/255),
         }
@@ -115,6 +122,9 @@ class PDFReport(FPDF):
         plt.pie(sizes, labels=labels, colors=colors, autopct="%1.1f%%", startangle=140)
         plt.title("Severity Distribution", fontsize=14, fontweight="bold")
         plt.tight_layout()
+
+        # ✅ Save chart inside report_charts folder
+        chart_path = os.path.join(OUTPUT_DIR, "severity_chart.png")
         plt.savefig(chart_path, dpi=150)
         plt.close()
 
