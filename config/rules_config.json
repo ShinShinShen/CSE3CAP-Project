@@ -89,7 +89,8 @@
             "status": ["enable"],
             "action": ["accept", "allow"]
           },
-          "severity": "HIGH"
+          "severity": "HIGH",
+          "category": "User Access"
         },
         "allow_all_destination_port_client3": {
           "enabled": true,
@@ -99,7 +100,8 @@
             "status": ["enable"],
             "action": ["accept", "allow"]
           },
-          "severity": "HIGH"
+          "severity": "HIGH",
+          "category": "User Access"
         },
         "allow_all_service_client3": {
           "enabled": true,
@@ -109,7 +111,8 @@
             "status": ["enable"],
             "action": ["accept", "allow"]
           },
-          "severity": "HIGH"
+          "severity": "HIGH",
+          "category": "Web"
         },
         "service_admin_port_exposed_client3": {
           "enabled": true,
@@ -121,7 +124,8 @@
             "status": ["enable"],
             "action": ["accept", "allow"]
           },
-          "severity": "CRITICAL"
+          "severity": "CRITICAL",
+          "category": "Admin"
         },
         "smb_netbios_exposed_client3": {
           "enabled": true,
@@ -133,7 +137,8 @@
             "status": ["enable"],
             "action": ["accept", "allow"]
           },
-          "severity": "CRITICAL"
+          "severity": "CRITICAL",
+          "category": "Web"
         },
         "suspicious_service_client3": {
           "enabled": true,
@@ -143,7 +148,8 @@
             "status": ["enable"],
             "action": ["accept", "allow"]
           },
-          "severity": "HIGH"
+          "severity": "HIGH",
+          "category": "Web"
         },
         "no_logging_client3": {
           "enabled": true,
@@ -152,7 +158,8 @@
             "status": ["enable"],
             "action": ["accept", "allow"]
           },
-          "severity": "MEDIUM"
+          "severity": "MEDIUM",
+          "category": "Admin"
         }
       }
     }
@@ -165,7 +172,8 @@
         "srcaddr": ["any", "all", "0.0.0.0/0"],
         "action": ["accept", "allow"]
       },
-      "severity": "HIGH"
+      "severity": "HIGH",
+      "category": "User Access"
     },
     "allow_all_destination_port": {
       "enabled": true,
@@ -173,7 +181,8 @@
         "dstaddr": ["any", "all", "0.0.0.0/0"],
         "action": ["accept", "allow"]
       },
-      "severity": "HIGH"
+      "severity": "HIGH",
+      "category": "User Access"
     },
     "allow_all_service": {
       "enabled": true,
@@ -181,52 +190,60 @@
         "service": ["all", "ip/0", "any"],
         "action": ["accept", "allow"]
       },
-      "severity": "MEDIUM"
+      "severity": "MEDIUM",
+      "category": "Web"
     },
 
     "smb_netbios_exposed": {
       "enabled": true,
       "match_ports": { "service": ["137", "135", "138", "139", "445", "netbios"] },
       "action_scope": ["accept", "allow"],
-      "severity": "CRITICAL"
+      "severity": "CRITICAL",
+      "category": "Web"
     },
     "admin_port_exposed": {
       "enabled": true,
       "match_ports": { "service": ["ssh", "23", "3389", "5900", "5985", "5986", "rdp"] },
       "action_scope": ["accept", "allow"],
-      "severity": "CRITICAL"
+      "severity": "CRITICAL",
+      "category": "Admin"
     },
     "suspicious_service": {
       "enabled": true,
       "match": { "service": [ "tftp", "irc", "smtp", "ldap"] },
       "action_scope": ["accept", "allow"],
-      "severity": "High"
+      "severity": "High",
+      "category": "Web"
     },
 
     "LPD_Port_Exposure": {
       "enabled": true,
       "match": { "service": ["lpdw0rm"] },
       "action_scope": ["accept", "allow"],
-      "severity": "High"
+      "severity": "High",
+      "category": "Web"
     },
     "broad_ip_range": {
       "enabled": true,
-        "values": ["all", "0.0.0.0/0", "::/0"],
-        "action_scope": ["accept", "allow"],
-        "severity": "HIGH"
+      "values": ["all", "0.0.0.0/0", "::/0"],
+      "action_scope": ["accept", "allow"],
+      "severity": "HIGH",
+      "category": "User Access"
     },
 
     "no_logging_error": {
       "enabled": true,
       "match": { "log": ["disable", "no log", "none", "log violation traffic"] },
       "action_scope": ["accept", "allow"],
-      "severity": "MEDIUM"
+      "severity": "MEDIUM",
+      "category": "Admin"
     },
     "weak_protocol": {
       "enabled": true,
       "match": { "service": ["http", "ftp", "telnet"] },
       "action_scope": ["accept", "allow"],
-      "severity": "HIGH"
+      "severity": "HIGH",
+      "category": "Web"
     },
     "any_source_high_port": {
       "enabled": true,
@@ -235,7 +252,8 @@
         "dst_port": ["1024-65535"],
         "action": ["accept", "allow"]
       },
-      "severity": "MEDIUM"
+      "severity": "MEDIUM",
+      "category": "User Access"
     }
   },
 

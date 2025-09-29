@@ -1,20 +1,3 @@
-# This file is part of FireFind Project.
-#
-# Copyright (C) 2025 Your Name
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 import argparse
 import os
 import curses
@@ -49,7 +32,7 @@ def export_findings_to_csv(results, output_path):
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
 
     with open(output_path, mode="w", newline="", encoding="utf-8") as csvfile:
-        fieldnames = ["rule_id", "issue", "field", "value", "severity"]
+        fieldnames = ["rule_id", "issue", "field", "value", "severity", "category"]
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
 
@@ -60,7 +43,8 @@ def export_findings_to_csv(results, output_path):
                     "issue": "No issues found",
                     "field": "-",
                     "value": "-",
-                    "severity": ""
+                    "severity": "",
+                    "category": "-"
                 })
             else:
                 for finding in findings:
@@ -69,7 +53,8 @@ def export_findings_to_csv(results, output_path):
                         "issue": finding["issue"],
                         "field": finding.get("field", "-"),
                         "value": finding.get("value", "-"),
-                        "severity": finding["severity"]
+                        "severity": finding["severity"],
+                        "category": finding.get("category", "-")
                     })
 
     print(f"\n Technical findings exported to {output_path}")
@@ -79,6 +64,7 @@ def export_findings_to_pdf(results, file_path, output_pdf, vendor=None):
     """Generate PDF report from findings."""
     findings = []
     severity_count = {}
+    category_count = {}
 
     for rid, issues in results.items():
         if not issues:
@@ -87,7 +73,8 @@ def export_findings_to_pdf(results, file_path, output_pdf, vendor=None):
                 "issue_type": "No issues found",
                 "field": "-",
                 "value": "-",
-                "severity": "INFO"
+                "severity": "INFO",
+                "category": "-"
             })
             severity_count["INFO"] = severity_count.get("INFO", 0) + 1
         else:
@@ -97,10 +84,13 @@ def export_findings_to_pdf(results, file_path, output_pdf, vendor=None):
                     "issue_type": f.get("issue", ""),
                     "field": f.get("field", "-"),
                     "value": f.get("value", "-"),
-                    "severity": f.get("severity", "UNKNOWN")
+                    "severity": f.get("severity", "UNKNOWN"),
+                    "category": f.get("category", "-")
                 })
                 sev = f["severity"].upper()
                 severity_count[sev] = severity_count.get(sev, 0) + 1
+                cat = f.get("category", "-")
+                category_count[cat] = category_count.get(cat, 0) + 1
 
     total_rules = len(results)
     total_risks = sum(1 for f in findings if f["issue_type"] != "No issues found")
@@ -108,16 +98,12 @@ def export_findings_to_pdf(results, file_path, output_pdf, vendor=None):
     pdf = PDFReport()
     pdf.add_page()
     pdf.add_summary(os.path.basename(file_path), total_rules, total_risks, severity_count, vendor)
-    pdf.add_severity_chart(severity_count)
+    pdf.add_charts(severity_count, category_count)
     pdf.add_table(findings)
     pdf.output(output_pdf)
 
     print(f" PDF report exported to {output_pdf}")
 
-
-# -----------------------
-# Main program
-# -----------------------
 
 def process_file(file_path, vendor=None):
     vendor = vendor.lower() if vendor else rule_parser.detect_vendor(file_path)
@@ -141,11 +127,15 @@ def process_file(file_path, vendor=None):
         if findings:
             print(f"\nRule: {rule_id}")
             for finding in findings:
-                print(f"  - [{finding['severity']}] {finding['issue']} (Field: {finding.get('field','-')} | Value: {finding.get('value','-')})")
+                print(
+                    f"  - [{finding['severity']}] {finding['issue']} "
+                    f"(Field: {finding.get('field','-')} | "
+                    f"Value: {finding.get('value','-')} | "
+                    f"Category: {finding.get('category','-')})"
+                )
         else:
             print(f"\nRule: {rule_id} - No issues found")
 
-    # Exports
     base_name = os.path.splitext(os.path.basename(file_path))[0]
     csv_path = os.path.join("output", f"{base_name}_findings.csv")
     pdf_path = os.path.join("output", f"{base_name}_report.pdf")
@@ -160,12 +150,10 @@ def main():
     parser_args.add_argument("-v", "--vendor", help="Vendor name (optional, auto-detect)")
     args = parser_args.parse_args()
 
-    # If file passed via CLI
     if args.file:
         process_file(args.file, args.vendor)
         return
 
-    # Otherwise, use interactive mode
     while True:
         user_choice = start_menu()
         if user_choice == "exit":
@@ -185,6 +173,5 @@ def main():
             args.vendor = None
 
 
-# Entry point
 if __name__ == "__main__":
     main()

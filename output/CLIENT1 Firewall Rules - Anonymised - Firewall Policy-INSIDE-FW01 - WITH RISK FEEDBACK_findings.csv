@@ -1,0 +1,96 @@
+rule_id,issue,field,value,severity,category
+1,No issues found,-,-,,-
+2,No issues found,-,-,,-
+3,No issues found,-,-,,-
+4,weak_protocol,service,http,HIGH,Web
+5,No issues found,-,-,,-
+6,suspicious_service,service,ldap,High,Web
+6,suspicious_service,service,ldap,High,Web
+7,suspicious_service,service,smtp,High,Web
+7,no_logging_error,log,no log,MEDIUM,Admin
+8,allow_all_service,service,all,MEDIUM,Web
+8,allow_all_service,action,accept,MEDIUM,Web
+9,allow_all_service,service,all,MEDIUM,Web
+9,allow_all_service,action,accept,MEDIUM,Web
+9,no_logging_error,log,no log,MEDIUM,Admin
+10,no_logging_error,log,no log,MEDIUM,Admin
+11,allow_all_service,service,all,MEDIUM,Web
+11,allow_all_service,action,accept,MEDIUM,Web
+12,suspicious_service,service,smtp,High,Web
+12,no_logging_error,log,no log,MEDIUM,Admin
+13,no_logging_error,log,no log,MEDIUM,Admin
+14,LPD_Port_Exposure,service,lpdw0rm,High,Web
+14,no_logging_error,log,no log,MEDIUM,Admin
+15,No issues found,-,-,,-
+16,No issues found,-,-,,-
+17,allow_all_service,service,all,MEDIUM,Web
+17,allow_all_service,action,accept,MEDIUM,Web
+17,no_logging_error,log,no log,MEDIUM,Admin
+18,No issues found,-,-,,-
+19,No issues found,-,-,,-
+20,no_logging_error,log,no log,MEDIUM,Admin
+21,no_logging_error,log,no log,MEDIUM,Admin
+22,No issues found,-,-,,-
+23,allow_all_service,service,all,MEDIUM,Web
+23,allow_all_service,action,accept,MEDIUM,Web
+24,LPD_Port_Exposure,service,lpdw0rm,High,Web
+24,no_logging_error,log,no log,MEDIUM,Admin
+25,no_logging_error,log,no log,MEDIUM,Admin
+26,No issues found,-,-,,-
+27,weak_protocol,service,ftp,HIGH,Web
+28,No issues found,-,-,,-
+29,No issues found,-,-,,-
+30,smb_netbios_exposed,service,135,CRITICAL,Web
+30,smb_netbios_exposed,service,445,CRITICAL,Web
+31,smb_netbios_exposed,service,135,CRITICAL,Web
+31,smb_netbios_exposed,service,445,CRITICAL,Web
+32,smb_netbios_exposed,service,135,CRITICAL,Web
+32,smb_netbios_exposed,service,445,CRITICAL,Web
+33,allow_all_service,service,all,MEDIUM,Web
+33,allow_all_service,action,accept,MEDIUM,Web
+34,admin_port_exposed,service,ssh,CRITICAL,Admin
+34,admin_port_exposed,service,23,CRITICAL,Admin
+34,weak_protocol,service,telnet,HIGH,Web
+35,admin_port_exposed,service,ssh,CRITICAL,Admin
+35,no_logging_error,log,no log,MEDIUM,Admin
+36,admin_port_exposed,service,ssh,CRITICAL,Admin
+36,admin_port_exposed,service,23,CRITICAL,Admin
+36,no_logging_error,log,no log,MEDIUM,Admin
+36,weak_protocol,service,telnet,HIGH,Web
+37,weak_protocol,service,http,HIGH,Web
+38,No issues found,-,-,,-
+39,admin_port_exposed,service,23,CRITICAL,Admin
+39,no_logging_error,log,no log,MEDIUM,Admin
+39,weak_protocol,service,telnet,HIGH,Web
+40,No issues found,-,-,,-
+41,allow_all_service,service,all,MEDIUM,Web
+41,allow_all_service,action,accept,MEDIUM,Web
+41,no_logging_error,log,no log,MEDIUM,Admin
+42,No issues found,-,-,,-
+43,no_logging_error,log,no log,MEDIUM,Admin
+44,No issues found,-,-,,-
+45,no_logging_error,log,no log,MEDIUM,Admin
+45,weak_protocol,service,http,HIGH,Web
+46,no_logging_error,log,no log,MEDIUM,Admin
+46,weak_protocol,service,ftp,HIGH,Web
+47,no_logging_error,log,no log,MEDIUM,Admin
+48,weak_protocol,service,http,HIGH,Web
+49,no_logging_error,log,no log,MEDIUM,Admin
+50,admin_port_exposed,service,3389,CRITICAL,Admin
+50,no_logging_error,log,no log,MEDIUM,Admin
+50,weak_protocol,service,http,HIGH,Web
+51,weak_protocol,service,http,HIGH,Web
+52,weak_protocol,service,http,HIGH,Web
+53,admin_port_exposed,service,ssh,CRITICAL,Admin
+53,admin_port_exposed,service,23,CRITICAL,Admin
+53,admin_port_exposed,service,3389,CRITICAL,Admin
+53,no_logging_error,log,no log,MEDIUM,Admin
+53,weak_protocol,service,telnet,HIGH,Web
+54,no_logging_error,log,no log,MEDIUM,Admin
+54,weak_protocol,service,http,HIGH,Web
+55,No issues found,-,-,,-
+56,No issues found,-,-,,-
+57,No issues found,-,-,,-
+58,weak_protocol,service,http,HIGH,Web
+59,weak_protocol,service,http,HIGH,Web
+60,admin_port_exposed,service,ssh,CRITICAL,Admin
