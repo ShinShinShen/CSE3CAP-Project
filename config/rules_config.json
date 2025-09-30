@@ -49,6 +49,36 @@
       }
     },
 
+    "sophos": {
+  "detect_headers_any": ["id", "name", "source", "destination", "services", "action"],
+  "columns": {
+    "id": ["id"],
+    "name": ["name"],
+    "srcaddr": ["source"],
+    "dstaddr": ["destination"],
+    "service": ["services"],
+    "action": ["action"],
+    "log": ["log_traffic"],
+    "comment": ["comment"],
+    "status": ["status"]
+  },
+  "defaults": {
+    "log": "enabled",
+    "comment": "",
+    "status": "enable"
+  },
+  "normalization": {
+    "log": {
+      "true": "enabled",
+      "false": "disable"
+    },
+    "status": {
+      "enabled": "enable",
+      "disabled": "disable"
+    }
+  }
+},
+
     "sdwan": {
       "detect_headers_any": ["rule id", "src-ip", "dst-ip", "protocol", "action"],
       "columns": {
@@ -223,21 +253,22 @@
 
     "smb_netbios_exposed": {
       "enabled": true,
-      "match_ports": { "service": ["137", "135", "138", "139", "445", "netbios"] },
+      "match_ports": { "service": ["137", "135", "138", "139", "445", "netbios", "'service-smb'"] },
       "action_scope": ["accept", "allow"],
       "severity": "CRITICAL",
       "category": "Web"
     },
+  
     "admin_port_exposed": {
       "enabled": true,
-      "match_ports": { "service": ["ssh", "23", "3389", "5900", "5985", "5986", "rdp"] },
+      "match_ports": { "service": ["ssh", "23", "3389", "5900", "5985", "5986", "rdp", "22", "'service-ssh'","service-rdp"] },
       "action_scope": ["accept", "allow"],
       "severity": "CRITICAL",
       "category": "Admin"
     },
     "suspicious_service": {
       "enabled": true,
-      "match": { "service": ["tftp", "irc", "smtp", "ldap"] },
+      "match": { "service": ["tftp", "irc", "smtp", "ldap", "25" ] },
       "action_scope": ["accept", "allow"],
       "severity": "High",
       "category": "Web"
@@ -258,20 +289,20 @@
     },
     "no_logging_error": {
       "enabled": true,
-      "match": { "log": ["disable", "no log", "none", "log violation traffic"] },
+      "match": { "log": ["disable", "false", "no log", "none", "log violation traffic"] },
       "action_scope": ["accept", "allow"],
       "severity": "MEDIUM",
       "category": "Admin"
     },
     "weak_protocol": {
       "enabled": true,
-      "match": { "service": ["http", "ftp", "telnet"] },
+      "match": { "service": ["http", "ftp", "telnet", "21"] },
       "action_scope": ["accept", "allow"],
       "severity": "HIGH",
       "category": "Web"
     },
     "any_source_high_port": {
-      "enabled": true,
+      "enabled": false,
       "match": {
         "srcaddr": ["any", "all", "0.0.0.0/0"],
         "dst_port": ["1024-65535"],
@@ -285,7 +316,7 @@
   "service_port_map": {
     "ssh": "ssh",
     "telnet": "23",
-    "rdp": "3389",
+    "rdp": "rdp",
     "vnc": "5900",
     "winrm-http": "5985",
     "winrm-https": "5986",
@@ -295,5 +326,10 @@
     "microsoft-ds": "445",
     "[rdp]": "rdp",
     "grp_netbios": "netbios"
+
+
+
+
+
   }
 }

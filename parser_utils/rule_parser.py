@@ -2,6 +2,7 @@ import csv
 import pandas as pd
 import re
 import os
+import json
 from config.config_loader import load_config
 
 config = load_config()
@@ -22,6 +23,8 @@ def detect_vendor(file_path):
             return "client 1 or 3 xlsx"
     if "checkpoint" in file_name or "check-point" in file_name:
         return "checkpoint"
+    if "sophos" in file_name:
+        return "sophos"
 
     return None
 
@@ -50,6 +53,12 @@ def extract_port(service_str):
     return match.group(1) if match else ""
 
 
+def safe_extract(pattern, text):
+    """Helper to safely extract regex group 1."""
+    m = re.search(pattern, text, re.IGNORECASE)
+    return m.group(1) if m else ""
+
+
 def parse_file(file_path, vendor=None):
     """Parse CSV/XLSX into normalized firewall rules using vendor mappings."""
     if not vendor:
@@ -61,13 +70,55 @@ def parse_file(file_path, vendor=None):
     print(f"✅ Vendor Detected: {vendor}")
 
     mappings = config.data["vendor_mappings"].get(vendor, {}).get("columns", {})
-    if not mappings:
+    if not mappings and vendor not in ["sophos", "checkpoint", "client3_csv"]:
         print(f"❌ No vendor mapping found for: {vendor}")
         return []
 
     rules = []
 
     try:
+        # ---------------- Sophos CSV ----------------
+        if vendor == "sophos" and file_path.endswith(".csv"):
+            df = pd.read_csv(file_path, usecols=[0], header=None, engine="python")
+            df = df.iloc[2:]  # skip first 2 rows
+            counter = 1
+
+            for _, row in df.iterrows():
+                cell = str(row[0]).strip()
+                if not cell or not cell.startswith("{"):
+                    continue
+                try:
+                    if "}" in cell:
+                        cell = cell[:cell.rfind("}")+1]
+                        
+                    rule_json = json.loads(cell)
+
+                    # Normalize log_traffic boolean -> enabled/disable
+                    log_val = str(rule_json.get("log_traffic", "enabled")).lower()
+                    vendor_norms = config.data["vendor_mappings"].get("sophos", {}).get("normalization", {})
+                    if "log" in vendor_norms and log_val in vendor_norms["log"]:
+                        log_val = vendor_norms["log"][log_val]
+
+                    rules.append({
+                        "id": rule_json.get("id", counter),
+                        "name": rule_json.get("name", "").lower(),
+                        "srcaddr": ", ".join(rule_json.get("source", [])) if isinstance(rule_json.get("source"), list) else str(rule_json.get("source", "")),
+                        "dstaddr": ", ".join(rule_json.get("destination", [])) if isinstance(rule_json.get("destination"), list) else str(rule_json.get("destination", "")),
+                        "service": ", ".join(rule_json.get("services", [])) if isinstance(rule_json.get("services"), list) else str(rule_json.get("services", "")),
+                        "dst_port": extract_port(", ".join(rule_json.get("services", []))) if isinstance(rule_json.get("services"), list) else extract_port(str(rule_json.get("services", ""))),
+                        "action": rule_json.get("action", "").lower(),
+                        "log": log_val,  # ✅ normalized log value
+                        "comment": rule_json.get("comment", "").lower(),
+                        "status": rule_json.get("status", "enable").lower(),
+                        "vendor": "sophos"
+                    })
+                    counter += 1
+                except json.JSONDecodeError as e:
+                    print(f"⚠️ Skipping invalid JSON in Sophos row: {e}")
+
+            print("📑 Parsed first Sophos rule:", rules[0] if rules else "None")
+            return rules
+
         # ---------------- Client3 CSV ----------------
         if file_path.endswith(".csv") and vendor == "client3_csv":
             with open(file_path, newline='', encoding="utf-8") as csvfile:
@@ -113,29 +164,26 @@ def parse_file(file_path, vendor=None):
                     "vendor": vendor
                 })
 
-        # ---------------- Check Point CSV (raw parsing) ----------------
+        # ---------------- Check Point CSV ----------------
         elif file_path.endswith(".csv") and vendor == "checkpoint":
             rules = []
             with open(file_path, "r", encoding="utf-8-sig") as f:
                 reader = csv.reader(f, delimiter=",", quotechar='"')
                 rows = list(reader)
 
-                #skip header
                 for line in rows[1:]:
                     if not line or not line[0].strip():
                         continue
 
-                    # use csv.reader on the single string in column A
                     parts = next(csv.reader([line[0]], delimiter=",", quotechar='"'))
 
                     while len(parts) < 10:
                         parts.append("")
 
-
                     num, name, source, destination, service, action, track, install_on, enabled, comments = parts
 
                     rules.append({
-                       "id": num,
+                        "id": num,
                         "name": name.lower(),
                         "srcaddr": source.lower(),
                         "dstaddr": destination.lower(),
@@ -151,7 +199,7 @@ def parse_file(file_path, vendor=None):
             print("📑 Parsed first checkpoint rule:", rules[0] if rules else "None")
             return rules
 
-        # ---------------- Generic CSV (Client1, etc.) ----------------
+        # ---------------- Generic CSV (Client1, Fortinet, etc.) ----------------
         elif file_path.endswith(".csv"):
             df = pd.read_csv(file_path, dtype=str, delimiter=",", quotechar='"', engine="python").fillna("")
             df.columns = [str(c).strip().lower() for c in df.columns]
@@ -209,7 +257,7 @@ def parse_file(file_path, vendor=None):
                     "vendor": rule["vendor"]
                 })
 
-        # ---------------- XLSX ----------------
+        # ---------------- XLSX (Client1, Client2, etc.) ----------------
         elif file_path.endswith(".xlsx"):
             if vendor == "client2":
                 df = pd.read_excel(file_path, sheet_name=0, dtype=str, header=0, engine="openpyxl").fillna("")
