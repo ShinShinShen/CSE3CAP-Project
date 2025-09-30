@@ -1,0 +1,170 @@
+<security>
+  <rules>
+"    <entry name=""Allow_Users_to_App"">"
+      <from><member>trust</member></from>
+      <to><member>app</member></to>
+      <source><member>10.1.0.0/16</member></source>
+      <destination><member>172.16.100.0/24</member></destination>
+      <service>service-https</service>
+      <action>allow</action>
+    </entry>
+"    <entry name=""Allow_App_to_DB"">"
+      <from><member>app</member></from>
+      <to><member>db</member></to>
+      <source><member>172.16.100.0/24</member></source>
+      <destination><member>172.16.200.0/24</member></destination>
+      <service>service-mssql</service>
+      <action>allow</action>
+    </entry>
+"    <entry name=""Block_DB_to_App_ICMP"">"
+      <from><member>db</member></from>
+      <to><member>app</member></to>
+      <source><member>172.16.200.0/24</member></source>
+      <destination><member>172.16.100.0/24</member></destination>
+      <service>service-icmp</service>
+      <action>deny</action>
+    </entry>
+"    <entry name=""Allow_Dev_to_App_SSH"">"
+      <from><member>dev</member></from>
+      <to><member>app</member></to>
+      <source><member>10.2.0.0/24</member></source>
+      <destination><member>172.16.100.50</member></destination>
+      <service>service-ssh</service>
+      <action>allow</action>
+    </entry>
+"    <entry name=""Allow_Internet_to_Web"">"
+      <from><member>untrust</member></from>
+      <to><member>app</member></to>
+      <source><member>any</member></source>
+      <destination><member>172.16.100.10</member></destination>
+      <service>service-http-https</service>
+      <action>allow</action>
+      <description>Public web hosting</description>
+    </entry>
+"    <entry name=""Block_Internet_to_RDP"">"
+      <from><member>untrust</member></from>
+      <to><member>app</member></to>
+      <source><member>any</member></source>
+      <destination><member>172.16.100.0/24</member></destination>
+      <service>service-rdp</service>
+      <action>deny</action>
+    </entry>
+"    <entry name=""Block_Internet_to_DB"">"
+      <from><member>untrust</member></from>
+      <to><member>db</member></to>
+      <source><member>any</member></source>
+      <destination><member>172.16.200.0/24</member></destination>
+      <service>any</service>
+      <action>deny</action>
+    </entry>
+"    <entry name=""Allow_VPN_Admin_SSH"">"
+      <from><member>vpn</member></from>
+      <to><member>app</member></to>
+      <source><member>10.8.0.0/24</member></source>
+      <destination><member>172.16.100.0/24</member></destination>
+      <service>service-ssh</service>
+      <action>allow</action>
+    </entry>
+"    <entry name=""Allow_VPN_Admin_SQL"">"
+      <from><member>vpn</member></from>
+      <to><member>db</member></to>
+      <source><member>10.8.0.0/24</member></source>
+      <destination><member>172.16.200.10</member></destination>
+      <service>service-mssql</service>
+      <action>allow</action>
+    </entry>
+"    <entry name=""Allow_App_SMTP"">"
+      <from><member>app</member></from>
+      <to><member>untrust</member></to>
+      <source><member>172.16.100.20</member></source>
+      <destination><member>any</member></destination>
+      <service>service-smtp</service>
+      <action>allow</action>
+    </entry>
+"    <entry name=""Allow_App_NTP"">"
+      <from><member>app</member></from>
+      <to><member>untrust</member></to>
+      <source><member>172.16.100.0/24</member></source>
+      <destination><member>any</member></destination>
+      <service>service-ntp</service>
+      <action>allow</action>
+    </entry>
+"    <entry name=""Allow_Users_DNS"">"
+      <from><member>trust</member></from>
+      <to><member>untrust</member></to>
+      <source><member>10.1.0.0/16</member></source>
+      <destination><member>any</member></destination>
+      <service>service-dns</service>
+      <action>allow</action>
+    </entry>
+"    <entry name=""Block_SNMP_From_App"">"
+      <from><member>app</member></from>
+      <to><member>trust</member></to>
+      <source><member>172.16.100.0/24</member></source>
+      <destination><member>10.1.0.0/16</member></destination>
+      <service>service-snmp</service>
+      <action>deny</action>
+    </entry>
+"    <entry name=""Allow_Oracle_DB"">"
+      <from><member>app</member></from>
+      <to><member>db</member></to>
+      <source><member>172.16.100.0/24</member></source>
+      <destination><member>172.16.200.0/24</member></destination>
+      <service>service-oracle</service>
+      <action>allow</action>
+    </entry>
+"    <entry name=""Allow_Backup_DB_to_App"">"
+      <from><member>db</member></from>
+      <to><member>app</member></to>
+      <source><member>172.16.200.200</member></source>
+      <destination><member>172.16.100.200</member></destination>
+      <service>service-smb</service>
+      <action>allow</action>
+    </entry>
+"    <entry name=""Allow_Specific_Legacy_Host"">"
+      <from><member>trust</member></from>
+      <to><member>app</member></to>
+      <source><member>10.1.50.50</member></source>
+      <destination><member>172.16.100.10</member></destination>
+      <service>any</service>
+      <action>allow</action>
+      <description>Legacy host broad access</description>
+    </entry>
+"    <entry name=""Block_ICMP_From_Guest"">"
+      <from><member>guest</member></from>
+      <to><member>app</member></to>
+      <source><member>192.168.70.0/24</member></source>
+      <destination><member>172.16.100.0/24</member></destination>
+      <service>service-icmp</service>
+      <action>deny</action>
+    </entry>
+"    <entry name=""Allow_Trust_to_Internet"">"
+      <from><member>trust</member></from>
+      <to><member>untrust</member></to>
+      <source><member>10.1.0.0/16</member></source>
+      <destination><member>any</member></destination>
+      <service>any</service>
+      <action>allow</action>
+      <description>Broad egress</description>
+    </entry>
+"    <entry name=""Deny_All_Fallback"">"
+      <from><member>any</member></from>
+      <to><member>any</member></to>
+      <source><member>any</member></source>
+      <destination><member>any</member></destination>
+      <service>any</service>
+      <action>deny</action>
+      <description>Default deny all</description>
+    </entry>
+  </rules>
+</security>
+</security>
+      <to><member>any</member></to>
+      <source><member>any</member></source>
+      <destination><member>any</member></destination>
+      <service>any</service>
+      <action>deny</action>
+      <description>Default deny all</description>
+    </entry>
+  </rules>
+</security>

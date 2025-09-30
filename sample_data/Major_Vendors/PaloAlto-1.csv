@@ -1,0 +1,170 @@
+<security>
+  <rules>
+"    <entry name=""Allow_Internal_to_DMZ_Web"">"
+      <from><member>trust</member></from>
+      <to><member>dmz</member></to>
+      <source><member>10.0.1.0/24</member></source>
+      <destination><member>172.16.10.10</member></destination>
+      <service>service-http-https</service>
+      <action>allow</action>
+      <description>Internal to DMZ web</description>
+    </entry>
+"    <entry name=""Allow_App_to_DB"">"
+      <from><member>app</member></from>
+      <to><member>db</member></to>
+      <source><member>172.16.10.0/24</member></source>
+      <destination><member>172.16.20.0/24</member></destination>
+      <service>service-mssql</service>
+      <action>allow</action>
+      <description>App tier to DB</description>
+    </entry>
+"    <entry name=""Deny_Guest_to_Internal"">"
+      <from><member>guest</member></from>
+      <to><member>trust</member></to>
+      <source><member>192.168.50.0/24</member></source>
+      <destination><member>10.0.0.0/8</member></destination>
+      <service>any</service>
+      <action>deny</action>
+      <description>Block guest access</description>
+    </entry>
+"    <entry name=""Allow_VPN_Admin_RDP"">"
+      <from><member>vpn</member></from>
+      <to><member>trust</member></to>
+      <source><member>10.8.0.0/24</member></source>
+      <destination><member>10.0.1.50</member></destination>
+      <service>service-rdp</service>
+      <action>allow</action>
+    </entry>
+"    <entry name=""Allow_Internal_DNS"">"
+      <from><member>trust</member></from>
+      <to><member>untrust</member></to>
+      <source><member>10.0.1.0/24</member></source>
+      <destination><member>any</member></destination>
+      <service>service-dns</service>
+      <action>allow</action>
+    </entry>
+"    <entry name=""Allow_Internal_NTP"">"
+      <from><member>trust</member></from>
+      <to><member>untrust</member></to>
+      <source><member>10.0.1.0/24</member></source>
+      <destination><member>any</member></destination>
+      <service>service-ntp</service>
+      <action>allow</action>
+    </entry>
+"    <entry name=""Deny_ICMP_From_Guest"">"
+      <from><member>guest</member></from>
+      <to><member>dmz</member></to>
+      <source><member>192.168.50.0/24</member></source>
+      <destination><member>172.16.10.0/24</member></destination>
+      <service>service-icmp</service>
+      <action>deny</action>
+    </entry>
+"    <entry name=""Allow_Internal_Internet"">"
+      <from><member>trust</member></from>
+      <to><member>untrust</member></to>
+      <source><member>10.0.1.0/24</member></source>
+      <destination><member>any</member></destination>
+      <service>any</service>
+      <action>allow</action>
+      <description>Broad egress rule</description>
+    </entry>
+"    <entry name=""Block_SMTP_From_Guest"">"
+      <from><member>guest</member></from>
+      <to><member>untrust</member></to>
+      <source><member>192.168.50.0/24</member></source>
+      <destination><member>any</member></destination>
+      <service>service-smtp</service>
+      <action>deny</action>
+    </entry>
+"    <entry name=""Allow_DMZ_Web_to_Internet"">"
+      <from><member>dmz</member></from>
+      <to><member>untrust</member></to>
+      <source><member>172.16.10.10</member></source>
+      <destination><member>any</member></destination>
+      <service>service-http-https</service>
+      <action>allow</action>
+    </entry>
+"    <entry name=""Block_RDP_From_Internet"">"
+      <from><member>untrust</member></from>
+      <to><member>dmz</member></to>
+      <source><member>any</member></source>
+      <destination><member>172.16.10.10</member></destination>
+      <service>service-rdp</service>
+      <action>deny</action>
+    </entry>
+"    <entry name=""Allow_SMTP_Relay"">"
+      <from><member>dmz</member></from>
+      <to><member>untrust</member></to>
+      <source><member>172.16.10.20</member></source>
+      <destination><member>any</member></destination>
+      <service>service-smtp</service>
+      <action>allow</action>
+    </entry>
+"    <entry name=""Allow_Specific_Host_All"">"
+      <from><member>trust</member></from>
+      <to><member>untrust</member></to>
+      <source><member>10.0.1.200</member></source>
+      <destination><member>any</member></destination>
+      <service>any</service>
+      <action>allow</action>
+      <description>Legacy host full access</description>
+    </entry>
+"    <entry name=""Block_FTP_Egress"">"
+      <from><member>trust</member></from>
+      <to><member>untrust</member></to>
+      <source><member>10.0.1.0/24</member></source>
+      <destination><member>any</member></destination>
+      <service>service-ftp</service>
+      <action>deny</action>
+    </entry>
+"    <entry name=""Allow_Admin_SSH_VPN"">"
+      <from><member>vpn</member></from>
+      <to><member>trust</member></to>
+      <source><member>10.8.0.0/24</member></source>
+      <destination><member>10.0.1.10</member></destination>
+      <service>service-ssh</service>
+      <action>allow</action>
+    </entry>
+"    <entry name=""Block_Guest_SNMP"">"
+      <from><member>guest</member></from>
+      <to><member>dmz</member></to>
+      <source><member>192.168.50.0/24</member></source>
+      <destination><member>172.16.10.0/24</member></destination>
+      <service>service-snmp</service>
+      <action>deny</action>
+    </entry>
+"    <entry name=""Allow_Oracle_Traffic"">"
+      <from><member>app</member></from>
+      <to><member>db</member></to>
+      <source><member>172.16.10.0/24</member></source>
+      <destination><member>172.16.20.0/24</member></destination>
+      <service>service-oracle</service>
+      <action>allow</action>
+    </entry>
+"    <entry name=""Allow_HQ_to_Branch"">"
+      <from><member>trust</member></from>
+      <to><member>branch</member></to>
+      <source><member>10.0.1.0/24</member></source>
+      <destination><member>10.2.0.0/24</member></destination>
+      <service>service-rdp</service>
+      <action>allow</action>
+    </entry>
+"    <entry name=""Allow_Branch_to_HQ"">"
+      <from><member>branch</member></from>
+      <to><member>trust</member></to>
+      <source><member>10.2.0.0/24</member></source>
+      <destination><member>10.0.1.0/24</member></destination>
+      <service>service-smb</service>
+      <action>allow</action>
+    </entry>
+"    <entry name=""Deny_All_Fallback"">"
+      <from><member>any</member></from>
+      <to><member>any</member></to>
+      <source><member>any</member></source>
+      <destination><member>any</member></destination>
+      <service>any</service>
+      <action>deny</action>
+      <description>Default deny all</description>
+    </entry>
+  </rules>
+</security>

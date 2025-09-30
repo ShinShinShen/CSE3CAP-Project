@@ -1,0 +1,9 @@
+rule_id,issue,field,value,severity,category
+1,admin_port_exposed,service,ssh,CRITICAL,Admin
+2,weak_protocol,service,http,HIGH,Web
+3,allow_all_destination_port,dstaddr,any,HIGH,User Access
+3,allow_all_destination_port,action,accept,HIGH,User Access
+3,admin_port_exposed,service,3389,CRITICAL,Admin
+4,allow_all_destination_port,dstaddr,any,HIGH,User Access
+4,allow_all_destination_port,action,accept,HIGH,User Access
+5,suspicious_service,service,smtp,High,Web

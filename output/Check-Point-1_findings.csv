@@ -1,0 +1,32 @@
+rule_id,issue,field,value,severity,category
+1,No issues found,-,-,,-
+2,No issues found,-,-,,-
+3,No issues found,-,-,,-
+4,allow_all_destination_port,dstaddr,any,HIGH,User Access
+4,allow_all_destination_port,action,accept,HIGH,User Access
+5,allow_all_destination_port,dstaddr,any,HIGH,User Access
+5,allow_all_destination_port,action,accept,HIGH,User Access
+5,no_logging_error,log,none,MEDIUM,Admin
+6,No issues found,-,-,,-
+7,admin_port_exposed,service,ssh,CRITICAL,Admin
+8,admin_port_exposed,service,3389,CRITICAL,Admin
+9,No issues found,-,-,,-
+10,No issues found,-,-,,-
+11,allow_all_destination_port,dstaddr,any,HIGH,User Access
+11,allow_all_destination_port,action,accept,HIGH,User Access
+11,suspicious_service,service,smtp,High,Web
+12,allow_all_destination_port,dstaddr,any,HIGH,User Access
+12,allow_all_destination_port,action,accept,HIGH,User Access
+12,allow_all_service,service,any,MEDIUM,Web
+12,allow_all_service,action,accept,MEDIUM,Web
+13,No issues found,-,-,,-
+14,No issues found,-,-,,-
+15,allow_all_destination_port,dstaddr,any,HIGH,User Access
+15,allow_all_destination_port,action,accept,HIGH,User Access
+15,allow_all_service,service,any,MEDIUM,Web
+15,allow_all_service,action,accept,MEDIUM,Web
+16,No issues found,-,-,,-
+17,No issues found,-,-,,-
+18,No issues found,-,-,,-
+19,admin_port_exposed,service,ssh,CRITICAL,Admin
+20,No issues found,-,-,,-

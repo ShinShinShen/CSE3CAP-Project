@@ -21,6 +21,34 @@
       }
     },
 
+    "checkpoint": {
+      "detect_headers_any": ["num", "source", "destination", "service", "action"],
+      "columns": {
+        "id": ["num"],
+        "name": ["name"],
+        "srcaddr": ["source"],
+        "dstaddr": ["destination"],
+        "service": ["service"],
+        "action": ["action"],
+        "log": ["track"],
+        "comment": ["comments"],
+        "status": ["enabled"],
+        "install_on": ["install_on"]
+      },
+      "defaults": {
+        "log": "log all sessions",
+        "comment": "",
+        "status": "enable"
+      },
+      "normalization": {
+        "status": {
+          "true": "enable",
+          "false": "disable"
+        }
+
+      }
+    },
+
     "sdwan": {
       "detect_headers_any": ["rule id", "src-ip", "dst-ip", "protocol", "action"],
       "columns": {
@@ -74,7 +102,6 @@
         "dstaddr_negate": ["dstaddr-negate"],
         "service_negate": ["service-negate"]
       },
-
       "defaults": {
         "log": "log all sessions",
         "comment": "",
@@ -210,12 +237,11 @@
     },
     "suspicious_service": {
       "enabled": true,
-      "match": { "service": [ "tftp", "irc", "smtp", "ldap"] },
+      "match": { "service": ["tftp", "irc", "smtp", "ldap"] },
       "action_scope": ["accept", "allow"],
       "severity": "High",
       "category": "Web"
     },
-
     "LPD_Port_Exposure": {
       "enabled": true,
       "match": { "service": ["lpdw0rm"] },
@@ -230,7 +256,6 @@
       "severity": "HIGH",
       "category": "User Access"
     },
-
     "no_logging_error": {
       "enabled": true,
       "match": { "log": ["disable", "no log", "none", "log violation traffic"] },

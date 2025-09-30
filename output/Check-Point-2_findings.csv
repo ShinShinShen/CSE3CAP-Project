@@ -1,0 +1,36 @@
+rule_id,issue,field,value,severity,category
+1,No issues found,-,-,,-
+2,No issues found,-,-,,-
+3,allow_all_destination_port,dstaddr,any,HIGH,User Access
+3,allow_all_destination_port,action,accept,HIGH,User Access
+4,allow_all_destination_port,dstaddr,any,HIGH,User Access
+4,allow_all_destination_port,action,accept,HIGH,User Access
+4,no_logging_error,log,none,MEDIUM,Admin
+5,allow_all_destination_port,dstaddr,any,HIGH,User Access
+5,allow_all_destination_port,action,accept,HIGH,User Access
+5,weak_protocol,service,http,HIGH,Web
+6,allow_all_destination_port,dstaddr,any,HIGH,User Access
+6,allow_all_destination_port,action,accept,HIGH,User Access
+7,No issues found,-,-,,-
+8,allow_all_destination_port,dstaddr,any,HIGH,User Access
+8,allow_all_destination_port,action,accept,HIGH,User Access
+8,no_logging_error,log,none,MEDIUM,Admin
+8,weak_protocol,service,http,HIGH,Web
+9,allow_all_destination_port,dstaddr,any,HIGH,User Access
+9,allow_all_destination_port,action,accept,HIGH,User Access
+9,no_logging_error,log,none,MEDIUM,Admin
+10,No issues found,-,-,,-
+11,No issues found,-,-,,-
+12,admin_port_exposed,service,ssh,CRITICAL,Admin
+13,admin_port_exposed,service,3389,CRITICAL,Admin
+14,allow_all_destination_port,dstaddr,any,HIGH,User Access
+14,allow_all_destination_port,action,accept,HIGH,User Access
+14,suspicious_service,service,smtp,High,Web
+15,No issues found,-,-,,-
+16,No issues found,-,-,,-
+17,allow_all_destination_port,dstaddr,any,HIGH,User Access
+17,allow_all_destination_port,action,accept,HIGH,User Access
+17,no_logging_error,log,none,MEDIUM,Admin
+18,No issues found,-,-,,-
+19,No issues found,-,-,,-
+20,No issues found,-,-,,-

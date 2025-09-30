@@ -1,0 +1,170 @@
+<security>
+  <rules>
+"    <entry name=""Allow_Branch_to_HQ_Apps"">"
+      <from><member>branch</member></from>
+      <to><member>vpn</member></to>
+      <source><member>10.20.1.0/24</member></source>
+      <destination><member>10.0.1.0/24</member></destination>
+      <service>service-https</service>
+      <action>allow</action>
+      <description>Branch LAN to HQ over VPN</description>
+    </entry>
+"    <entry name=""Allow_HQ_to_Branch_SMB"">"
+      <from><member>vpn</member></from>
+      <to><member>branch</member></to>
+      <source><member>10.0.1.0/24</member></source>
+      <destination><member>10.20.1.0/24</member></destination>
+      <service>service-smb</service>
+      <action>allow</action>
+      <description>HQ file share access</description>
+    </entry>
+"    <entry name=""Allow_Branch_DNS"">"
+      <from><member>branch</member></from>
+      <to><member>untrust</member></to>
+      <source><member>10.20.1.0/24</member></source>
+      <destination><member>any</member></destination>
+      <service>service-dns</service>
+      <action>allow</action>
+    </entry>
+"    <entry name=""Allow_Branch_NTP"">"
+      <from><member>branch</member></from>
+      <to><member>untrust</member></to>
+      <source><member>10.20.1.0/24</member></source>
+      <destination><member>any</member></destination>
+      <service>service-ntp</service>
+      <action>allow</action>
+    </entry>
+"    <entry name=""Allow_Branch_Web"">"
+      <from><member>branch</member></from>
+      <to><member>untrust</member></to>
+      <source><member>10.20.1.0/24</member></source>
+      <destination><member>any</member></destination>
+      <service>service-http-https</service>
+      <action>allow</action>
+    </entry>
+"    <entry name=""Deny_Branch_FTP"">"
+      <from><member>branch</member></from>
+      <to><member>untrust</member></to>
+      <source><member>10.20.1.0/24</member></source>
+      <destination><member>any</member></destination>
+      <service>service-ftp</service>
+      <action>deny</action>
+    </entry>
+"    <entry name=""Allow_Guest_Internet_HTTP"">"
+      <from><member>guest</member></from>
+      <to><member>untrust</member></to>
+      <source><member>192.168.60.0/24</member></source>
+      <destination><member>any</member></destination>
+      <service>service-http</service>
+      <action>allow</action>
+      <description>Guest WiFi to internet</description>
+    </entry>
+"    <entry name=""Allow_Guest_Internet_HTTPS"">"
+      <from><member>guest</member></from>
+      <to><member>untrust</member></to>
+      <source><member>192.168.60.0/24</member></source>
+      <destination><member>any</member></destination>
+      <service>service-https</service>
+      <action>allow</action>
+    </entry>
+"    <entry name=""Deny_Guest_to_Branch"">"
+      <from><member>guest</member></from>
+      <to><member>branch</member></to>
+      <source><member>192.168.60.0/24</member></source>
+      <destination><member>10.20.1.0/24</member></destination>
+      <service>any</service>
+      <action>deny</action>
+    </entry>
+"    <entry name=""Deny_Guest_to_HQ"">"
+      <from><member>guest</member></from>
+      <to><member>vpn</member></to>
+      <source><member>192.168.60.0/24</member></source>
+      <destination><member>10.0.1.0/24</member></destination>
+      <service>any</service>
+      <action>deny</action>
+    </entry>
+"    <entry name=""Allow_VPN_Admin_SSH"">"
+      <from><member>vpn</member></from>
+      <to><member>branch</member></to>
+      <source><member>10.8.0.0/24</member></source>
+      <destination><member>10.20.1.50</member></destination>
+      <service>service-ssh</service>
+      <action>allow</action>
+      <description>Admin VPN access to branch server</description>
+    </entry>
+"    <entry name=""Allow_VPN_Admin_RDP"">"
+      <from><member>vpn</member></from>
+      <to><member>branch</member></to>
+      <source><member>10.8.0.0/24</member></source>
+      <destination><member>10.20.1.50</member></destination>
+      <service>service-rdp</service>
+      <action>allow</action>
+    </entry>
+"    <entry name=""Allow_Branch_Mail_Relay"">"
+      <from><member>branch</member></from>
+      <to><member>untrust</member></to>
+      <source><member>10.20.1.100</member></source>
+      <destination><member>any</member></destination>
+      <service>service-smtp</service>
+      <action>allow</action>
+    </entry>
+"    <entry name=""Deny_Internet_RDP"">"
+      <from><member>untrust</member></from>
+      <to><member>branch</member></to>
+      <source><member>any</member></source>
+      <destination><member>10.20.1.0/24</member></destination>
+      <service>service-rdp</service>
+      <action>deny</action>
+    </entry>
+"    <entry name=""Deny_Internet_SSH"">"
+      <from><member>untrust</member></from>
+      <to><member>branch</member></to>
+      <source><member>any</member></source>
+      <destination><member>10.20.1.0/24</member></destination>
+      <service>service-ssh</service>
+      <action>deny</action>
+    </entry>
+"    <entry name=""Allow_Guest_NTP"">"
+      <from><member>guest</member></from>
+      <to><member>untrust</member></to>
+      <source><member>192.168.60.0/24</member></source>
+      <destination><member>any</member></destination>
+      <service>service-ntp</service>
+      <action>allow</action>
+    </entry>
+"    <entry name=""Block_Guest_SMTP"">"
+      <from><member>guest</member></from>
+      <to><member>untrust</member></to>
+      <source><member>192.168.60.0/24</member></source>
+      <destination><member>any</member></destination>
+      <service>service-smtp</service>
+      <action>deny</action>
+    </entry>
+"    <entry name=""Allow_Branch_Backup_to_HQ"">"
+      <from><member>branch</member></from>
+      <to><member>vpn</member></to>
+      <source><member>10.20.1.200</member></source>
+      <destination><member>10.0.1.200</member></destination>
+      <service>service-smb</service>
+      <action>allow</action>
+    </entry>
+"    <entry name=""Deny_All_Fallback"">"
+      <from><member>any</member></from>
+      <to><member>any</member></to>
+      <source><member>any</member></source>
+      <destination><member>any</member></destination>
+      <service>any</service>
+      <action>deny</action>
+      <description>Default deny</description>
+    </entry>
+  </rules>
+</security>
+      <to><member>any</member></to>
+      <source><member>any</member></source>
+      <destination><member>any</member></destination>
+      <service>any</service>
+      <action>deny</action>
+      <description>Default deny all</description>
+    </entry>
+  </rules>
+</security>

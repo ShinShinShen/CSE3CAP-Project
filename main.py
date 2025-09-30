@@ -99,6 +99,7 @@ def export_findings_to_pdf(results, file_path, output_pdf, vendor=None):
     pdf.add_page()
     pdf.add_summary(os.path.basename(file_path), total_rules, total_risks, severity_count, vendor)
     pdf.add_charts(severity_count, category_count)
+    
     pdf.add_table(findings)
     pdf.output(output_pdf)
 
