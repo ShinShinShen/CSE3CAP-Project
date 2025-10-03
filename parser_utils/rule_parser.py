@@ -1,3 +1,20 @@
+# This file is part of FireFind Project.
+#
+# Copyright (C) 2025 Your Name
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 import csv
 import pandas as pd
 import re
@@ -159,6 +176,9 @@ def parse_file(file_path, vendor=None):
                     "dst_port": extract_port(service_val),
                     "action": row.get("action", "").lower(),
                     "log": row.get("log", "log all sessions").lower(),
+                    "srcaddr_negate": row.get("srcaddr-negate", "").lower(),
+                    "dstaddr_negate": row.get("dstaddr-negate", "").lower(),
+                    "service_negate": row.get("service-negate", "").lower(),
                     "comment": row.get("comments", "").lower(),
                     "status": get_col_value(row, df, "status", mappings, vendor) or "enable",
                     "vendor": vendor

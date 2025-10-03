@@ -9,7 +9,7 @@ rule_id,issue,field,value,severity,category
 5,no_logging_error,log,none,MEDIUM,Admin
 6,No issues found,-,-,,-
 7,admin_port_exposed,service,ssh,CRITICAL,Admin
-8,admin_port_exposed,service,3389,CRITICAL,Admin
+8,admin_port_exposed,service,rdp,CRITICAL,Admin
 9,No issues found,-,-,,-
 10,No issues found,-,-,,-
 11,allow_all_destination_port,dstaddr,any,HIGH,User Access

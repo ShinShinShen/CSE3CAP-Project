@@ -116,7 +116,7 @@
       }
     },
 
-    "client3_csv": {
+   "client3_csv": {
       "detect_headers_any": ["policyid", "srcaddr", "dstaddr", "service", "action"],
       "columns": {
         "id": ["policyid"],
@@ -220,6 +220,8 @@
         }
       }
     }
+
+
   },
 
   "risk_rules": {
