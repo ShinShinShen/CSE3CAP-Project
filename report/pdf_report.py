@@ -133,7 +133,7 @@ class PDFReport(FPDF):
 
             plt.subplot(1, 2, 1)
             plt.pie(sizes, labels=labels, colors=colors, autopct="%1.1f%%", startangle=140)
-            plt.title("Rules by Severity", fontsize=12, fontweight="bold", pad=20)
+            plt.title("Risks by Severity", fontsize=12, fontweight="bold", pad=20)
 
         if category_count:
             labels2, sizes2 = [], []
@@ -144,7 +144,7 @@ class PDFReport(FPDF):
 
             plt.subplot(1, 2, 2)
             plt.pie(sizes2, labels=labels2, autopct="%1.1f%%", startangle=140)
-            plt.title("Rules by Category", fontsize=12, fontweight="bold", pad=20)
+            plt.title("Risks by Category", fontsize=12, fontweight="bold", pad=20)
 
         plt.tight_layout()
 
