@@ -18,13 +18,15 @@
 
 import argparse
 import os
-import curses
+import sys
 import csv
 from config.config_loader import load_config
-from file_browser.file_browser_with_subwindow import file_browser
 from checker import rule_checker
 from parser_utils import rule_parser
 from report.pdf_report import PDFReport
+
+import curses
+from file_browser.file_browser_with_subwindow import file_browser
 
 
 def start_menu():
@@ -43,6 +45,25 @@ def start_menu():
             return "exit"
         else:
             print("Invalid choice, please enter 1 or 2.")
+
+
+def post_run_menu():
+    print("\n------------------------------------------")
+    print("    What would you like to do next?")
+    print("------------------------------------------\n")
+    print("1. Select another file")
+    print("2. Exit\n")
+
+    while True:
+        choice = input("Enter your choice (1-2): ").strip()
+        if choice == "1":
+            return "browse"
+        elif choice == "2":
+            return "exit"
+        else:
+            print("Invalid choice, please enter 1 or 2.")
+
+
 
 
 def export_findings_to_csv(results, output_path):
@@ -171,8 +192,23 @@ def main():
 
     if args.file:
         process_file(args.file, args.vendor)
-        return
-
+        # After processing a direct file, offer next actions without the welcome banner
+        while True:
+            next_action = post_run_menu()
+            if next_action == "exit":
+                print("Goodbye!")
+                return
+            # browse again
+            try:
+                file_path = curses.wrapper(file_browser, os.getcwd())
+            except Exception as e:
+                print(f"File browser error: {e}")
+                continue
+            if file_path is None:
+                continue
+            process_file(file_path, None)
+        
+    # Interactive mode: show the welcome banner once
     while True:
         user_choice = start_menu()
         if user_choice == "exit":
@@ -190,6 +226,22 @@ def main():
 
             process_file(file_path, args.vendor)
             args.vendor = None
+            
+            # After processing, do not show the welcome banner again; show post-run menu
+            while True:
+                next_action = post_run_menu()
+                if next_action == "exit":
+                    print("Goodbye!")
+                    return
+                # browse again
+                try:
+                    file_path = curses.wrapper(file_browser, os.getcwd())
+                except Exception as e:
+                    print(f"File browser error: {e}")
+                    break
+                if file_path is None:
+                    continue
+                process_file(file_path, None)
 
 
 if __name__ == "__main__":

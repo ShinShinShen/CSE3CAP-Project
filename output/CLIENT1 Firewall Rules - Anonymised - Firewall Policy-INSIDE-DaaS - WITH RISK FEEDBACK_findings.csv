@@ -1,0 +1,64 @@
+rule_id,issue,field,value,severity,category
+1,No issues found,-,-,,-
+2,no_logging_error,log,no log,MEDIUM,Admin
+3,No issues found,-,-,,-
+4,no_logging_error,log,no log,MEDIUM,Admin
+5,no_logging_error,log,no log,MEDIUM,Admin
+5,weak_protocol,service,http,HIGH,Web
+6,no_logging_error,log,no log,MEDIUM,Admin
+7,no_logging_error,log,no log,MEDIUM,Admin
+8,smb_netbios_exposed,service,445,CRITICAL,Web
+8,no_logging_error,log,no log,MEDIUM,Admin
+9,no_logging_error,log,no log,MEDIUM,Admin
+10,smb_netbios_exposed,service,135,CRITICAL,Web
+10,no_logging_error,log,no log,MEDIUM,Admin
+11,no_logging_error,log,no log,MEDIUM,Admin
+11,weak_protocol,service,http,HIGH,Web
+12,no_logging_error,log,no log,MEDIUM,Admin
+13,no_logging_error,log,no log,MEDIUM,Admin
+14,No issues found,-,-,,-
+15,No issues found,-,-,,-
+16,weak_protocol,service,http,HIGH,Web
+17,allow_all_destination_port,dstaddr,any,HIGH,User Access
+17,allow_all_destination_port,action,accept,HIGH,User Access
+17,no_logging_error,log,no log,MEDIUM,Admin
+18,No issues found,-,-,,-
+19,no_logging_error,log,no log,MEDIUM,Admin
+20,No issues found,-,-,,-
+21,No issues found,-,-,,-
+22,smb_netbios_exposed,service,135,CRITICAL,Web
+22,smb_netbios_exposed,service,445,CRITICAL,Web
+22,no_logging_error,log,no log,MEDIUM,Admin
+23,smb_netbios_exposed,service,135,CRITICAL,Web
+23,smb_netbios_exposed,service,445,CRITICAL,Web
+23,no_logging_error,log,no log,MEDIUM,Admin
+24,smb_netbios_exposed,service,135,CRITICAL,Web
+24,smb_netbios_exposed,service,445,CRITICAL,Web
+25,smb_netbios_exposed,service,135,CRITICAL,Web
+25,smb_netbios_exposed,service,445,CRITICAL,Web
+26,smb_netbios_exposed,service,135,CRITICAL,Web
+26,smb_netbios_exposed,service,445,CRITICAL,Web
+27,allow_all_destination_port,dstaddr,any,HIGH,User Access
+27,allow_all_destination_port,action,accept,HIGH,User Access
+27,admin_port_exposed,service,ssh,CRITICAL,Admin
+27,weak_protocol,service,ftp,HIGH,Web
+27,weak_protocol,service,http,HIGH,Web
+28,No issues found,-,-,,-
+29,no_logging_error,log,no log,MEDIUM,Admin
+30,No issues found,-,-,,-
+31,No issues found,-,-,,-
+32,no_logging_error,log,no log,MEDIUM,Admin
+33,No issues found,-,-,,-
+34,no_logging_error,log,no log,MEDIUM,Admin
+35,no_logging_error,log,no log,MEDIUM,Admin
+35,weak_protocol,service,http,HIGH,Web
+36,smb_netbios_exposed,service,135,CRITICAL,Web
+36,no_logging_error,log,no log,MEDIUM,Admin
+36,weak_protocol,service,http,HIGH,Web
+37,no_logging_error,log,no log,MEDIUM,Admin
+38,no_logging_error,log,no log,MEDIUM,Admin
+38,weak_protocol,service,http,HIGH,Web
+39,no_logging_error,log,no log,MEDIUM,Admin
+40,smb_netbios_exposed,service,135,CRITICAL,Web
+40,smb_netbios_exposed,service,445,CRITICAL,Web
+40,no_logging_error,log,no log,MEDIUM,Admin
