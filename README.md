@@ -1,6 +1,6 @@
 # Firefind-Firewall
 
-This program is built purely on Python, you will need a modern version of Python to run it. Aside from that there are no third-party dependencies aside from a few python libraries.
+This program is built purely on Python, you will need a modern version of Python to run it. Aside from the only third-party dependencies are a few python libraries.
 
 ## Dependencies
 
