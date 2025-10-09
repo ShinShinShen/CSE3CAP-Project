@@ -9,6 +9,29 @@ This project requires the following Python libraries:
 - [fpdf2](https://py-pdf.github.io/fpdf2/) — for generating PDF reports 
 - matplotlib — for generating severity distribution charts 
 
+
+## ⚙️ Installation & Setup
+### 1. Clone the Repository
+```bash
+git clone git@github.com:ShinShinShen/Firefind-Firewall.git
+
+cd Firefind-Firewall
+```
+## 2. Create a Virtual Environment
+```bash
+python3 -m venv .venv
+```
+**For Linux/Mac**
+```bash
+source .venv/bin/activate   
+```
+**For Windows**
+```bash
+.venv\Scripts\activate      
+```
+
+## 3. Install Dependencies 
+
 All dependencies are listed in the [`requirements.txt`] file.  
 
 To install them into your environment, run:
