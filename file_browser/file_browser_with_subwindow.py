@@ -33,6 +33,13 @@ def file_browser(stdscr, path):
     """File browser window embedded inside the main application."""
     curses.curs_set(0)  # Hide cursor
 
+    # === Initialize color pairs ===
+    curses.start_color()
+    curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_WHITE)  # Highlighted selection
+    curses.init_pair(2, curses.COLOR_GREEN, curses.COLOR_BLACK)  # CSV/XLSX files
+    curses.init_pair(3, curses.COLOR_CYAN, curses.COLOR_BLACK)   # Directories
+
+
     current_selection = 0
     scroll_offset = 0
 
@@ -68,13 +75,24 @@ def file_browser(stdscr, path):
 
         for i, file in enumerate(files[scroll_offset:scroll_offset + max_height]):
             full_path = os.path.join(path, file) if file != ".." else os.path.dirname(path)
-            display = f"[DIR] {file}" if os.path.isdir(full_path) else f"     {file}"
+            is_dir = os.path.isdir(full_path)
 
+            # Determine color based on file type
+            color = curses.color_pair(0)
+            if is_dir:
+                color = curses.color_pair(3)  # Cyan for directories
+            elif file.lower().endswith((".csv", ".xlsx")):
+                color = curses.color_pair(2)  # Green for supported files
+
+            # Display text (same as before)
+            display = f"[DIR] {file}" if is_dir else f"     {file}"
             truncated_display = display[:win_w - 6]
+
+            # Highlight selected line
             if i + scroll_offset == current_selection:
-                file_win.addstr(i + 1, 2, f"> {truncated_display}", curses.A_REVERSE)
+                file_win.addstr(i + 1, 2, f"> {truncated_display}", curses.color_pair(1))
             else:
-                file_win.addstr(i + 1, 2, f"  {truncated_display}")
+                file_win.addstr(i + 1, 2, f"  {truncated_display}", color)
 
         file_win.refresh()
         key = file_win.getch()
