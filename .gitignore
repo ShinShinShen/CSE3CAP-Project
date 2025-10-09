@@ -3,3 +3,10 @@
 /.venv
 __pycache__/
 *.pyc
+
+#ignore contents of these output folder
+/report_charts/*
+/output/*
+#leave the folders themselves in the repo
+!/report_charts/.gitkeep
+!/output/.gitkeep
