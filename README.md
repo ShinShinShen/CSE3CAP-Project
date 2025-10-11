@@ -23,6 +23,8 @@ cd Firefind-Firewall
 ```bash
 python3 -m venv .venv
 ```
+
+*Entering the Virtual Environment*
 **For Linux/Mac**
 ```bash
 source .venv/bin/activate   
@@ -37,6 +39,7 @@ source .venv/bin/activate
 All dependencies are listed in the [`requirements.txt`] file.  
 
 To install them into your environment, run:
+(ensure you are in .venv virtual environment before installing dependencies and running the program)
 
 ```bash
 pip install -r requirements.txt
