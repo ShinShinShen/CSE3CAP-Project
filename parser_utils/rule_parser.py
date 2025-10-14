@@ -81,7 +81,7 @@ def parse_file(file_path, vendor=None):
     if not vendor:
         vendor = detect_vendor(file_path)
     if not vendor:
-        print("❌ Could not detect vendor.")
+        print("❌ Could not detect vendor due to this file format is not yet integrated into the tool!")
         return []
 
     print(f"✅ Vendor Detected: {vendor}")
@@ -133,7 +133,6 @@ def parse_file(file_path, vendor=None):
                 except json.JSONDecodeError as e:
                     print(f"⚠️ Skipping invalid JSON in Sophos row: {e}")
 
-            print("📑 Parsed first Sophos rule:", rules[0] if rules else "None")
             return rules
 
         # ---------------- Client3 CSV ----------------
@@ -216,7 +215,6 @@ def parse_file(file_path, vendor=None):
                         "vendor": vendor
                     })
 
-            print("📑 Parsed first checkpoint rule:", rules[0] if rules else "None")
             return rules
 
         # ---------------- Generic CSV (Client1, Fortinet, etc.) ----------------

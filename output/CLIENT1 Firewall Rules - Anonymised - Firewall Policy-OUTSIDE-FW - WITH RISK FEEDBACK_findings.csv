@@ -1,5 +1,0 @@
-rule_id,issue,field,value,severity,category
-1,allow_all_service,service,all,MEDIUM,Web
-1,allow_all_service,action,accept,MEDIUM,Web
-2,allow_all_service,service,all,MEDIUM,Web
-2,allow_all_service,action,accept,MEDIUM,Web

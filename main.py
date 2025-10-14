@@ -30,10 +30,15 @@ from file_browser.file_browser_with_subwindow import file_browser
 
 
 def start_menu():
-    print("\n==========================================")
-    print("    Welcome to FireFind - Firewall CLI")
-    print("==========================================\n")
-    print("Please select an option:")
+    print("\n=========================================================")
+    print("    Welcome to FireFind - Firewall Risk Analysis CLI")
+    print("===========================================================\n")
+    print("* FireFind is a Firewall Risk Analysis Tool.")
+    print("* It automatically analyzes firewall rule files (CSV/XLSX) from multiple Clients.")
+    print("* The tool can handle files from Client 1, Client 2, Client 3, Sophos, and CheckPoint.")
+    print("* It detects the vendor type & evaluates rules against configurable security checks.")
+    print("* The tool eventually generates CSV and PDF reports showing identified risks by severity and category.\n")
+    print("Please select an option to start:\n")
     print("1. Open File Browser to select firewall file (CSV/XLSX)")
     print("2. Exit\n")
 
