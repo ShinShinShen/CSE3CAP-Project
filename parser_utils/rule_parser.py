@@ -133,7 +133,6 @@ def parse_file(file_path, vendor=None):
                 except json.JSONDecodeError as e:
                     print(f"⚠️ Skipping invalid JSON in Sophos row: {e}")
 
-            print("📑 Parsed first Sophos rule:", rules[0] if rules else "None")
             return rules
 
         # ---------------- Client3 CSV ----------------
@@ -216,7 +215,6 @@ def parse_file(file_path, vendor=None):
                         "vendor": vendor
                     })
 
-            print("📑 Parsed first checkpoint rule:", rules[0] if rules else "None")
             return rules
 
         # ---------------- Generic CSV (Client1, Fortinet, etc.) ----------------
