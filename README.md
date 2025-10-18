@@ -25,6 +25,7 @@ python3 -m venv .venv
 ```
 
 *Entering the Virtual Environment*
+
 **For Linux/Mac**
 ```bash
 source .venv/bin/activate   
