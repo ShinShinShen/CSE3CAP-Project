@@ -32,7 +32,7 @@ source .venv/bin/activate
 ```
 **For Windows**
 ```bash
-.venv\Scripts\activate      
+.venv\Scripts\activate.bat    
 ```
 
 ## 3. Install Dependencies 
