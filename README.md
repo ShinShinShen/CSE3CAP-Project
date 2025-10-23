@@ -57,7 +57,7 @@ Once in your new virtual environment and all dependecies have been installed, th
 python main.py
 ```
 
-Note: to leave the virtual envrionment, type ```deactivate``` to return to regular shell/zsh terminal.
+*Note: to leave the virtual envrionment, type ```deactivate``` to return to regular shell/zsh terminal.*
 
 ## 📜 License
 This project is licensed under the **GNU General Public License v3.0** - see the [LICENSE](LICENSE) file for details.
