@@ -12,6 +12,8 @@ This project requires the following Python libraries:
 - matplotlib — for generating severity distribution charts 
 
 
+Note: Python 3.12 is highly recommended and will have the best compatibility.
+
 ## ⚙️ Installation & Setup
 ### 1. Clone the Repository
 ```bash
@@ -21,7 +23,7 @@ cd Firefind-Firewall
 ```
 ## 2. Create a Virtual Environment
 ```bash
-python3 -m venv .venv
+python3.12 -m venv .venv
 ```
 
 *Entering the Virtual Environment*
