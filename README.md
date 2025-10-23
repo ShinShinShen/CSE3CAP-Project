@@ -50,8 +50,14 @@ pip install -r requirements.txt
 The above will take care of any and all dependencies required for this project, installing them all for you in single command.
 
 
+## 4. Run the program
 
+Once in your new virtual environment and all dependecies have been installed, the program can be run with 
+```bash
+python main.py
+```
 
+Note: to leave the virtual envrionment, type ```deactivate``` to return to regular shell/zsh terminal.
 
 ## 📜 License
 This project is licensed under the **GNU General Public License v3.0** - see the [LICENSE](LICENSE) file for details.
